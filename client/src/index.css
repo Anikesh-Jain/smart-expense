@@ -1,0 +1,458 @@
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Global base styles */
+  body {
+    @apply bg-dark-950 text-dark-100 font-sans antialiased;
+  }
+
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-500;
+  }
+
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-info-500;
+  }
+}
+
+@layer components {
+  /* Reusable card component */
+  .card {
+    @apply bg-dark-800 border border-dark-700 rounded-2xl p-5 transition-all duration-200;
+  }
+
+  .card-hover:hover {
+    @apply border-dark-600 shadow-lg shadow-dark-950/50;
+  }
+
+  /* Button base styles */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm
+           transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-info-600 text-white hover:bg-info-700 focus-visible:outline-info-500
+           active:scale-[0.98];
+  }
+
+  .btn-success {
+    @apply btn bg-income-600 text-white hover:bg-income-700 focus-visible:outline-income-500
+           active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply btn bg-expense-600 text-white hover:bg-expense-700 focus-visible:outline-expense-500
+           active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-dark-300 hover:bg-dark-700 hover:text-dark-100
+           active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply btn bg-transparent border border-dark-600 text-dark-200 hover:bg-dark-700
+           hover:border-dark-500 active:scale-[0.98];
+  }
+
+  /* Form input styles */
+  .input {
+    @apply w-full bg-dark-900 border border-dark-600 text-dark-100 rounded-xl px-4 py-2.5
+           text-sm placeholder:text-dark-500 focus:border-info-500 focus:ring-1 focus:ring-info-500
+           transition-colors duration-200 outline-none;
+  }
+
+  .input-error {
+    @apply border-expense-500 focus:border-expense-500 focus:ring-expense-500;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-dark-300 mb-1.5;
+  }
+
+  /* Status badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply badge bg-income-500/15 text-income-400;
+  }
+
+  .badge-danger {
+    @apply badge bg-expense-500/15 text-expense-400;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning-500/15 text-warning-400;
+  }
+
+  .badge-info {
+    @apply badge bg-info-500/15 text-info-400;
+  }
+}
+
+/* ==========================================================================
+   Frosted Daylight (Light Theme) System
+   Provides WCAG-friendly contrast, rich frosted glassmorphism, and clear hierarchy
+   while strictly preserving Obsidian Dark flagship styling.
+   ========================================================================== */
+
+html.light body {
+  background-color: #f1f5f9;
+  background-image: 
+    radial-gradient(at 100% 0%, rgba(219, 234, 254, 0.45) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.35) 0px, transparent 50%);
+  color: #0f172a;
+}
+
+/* Custom Scrollbar for Light Theme */
+html.light ::-webkit-scrollbar-track {
+  background-color: #f1f5f9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* Base Canvas & Layout Overrides (supports plain & opacity-modified classes) */
+html.light [class*="bg-dark-950"],
+html.light .bg-dark-950 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Secondary Backgrounds & Frosted Recessed Containers */
+html.light [class*="bg-dark-900"],
+html.light .bg-dark-900 {
+  background-color: rgba(241, 245, 249, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Elevated Containers & Cards */
+html.light [class*="bg-dark-850"],
+html.light .bg-dark-850 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+html.light [class*="bg-dark-800"],
+html.light .bg-dark-800 {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+html.light [class*="bg-dark-750"],
+html.light .bg-dark-750 {
+  background-color: #e2e8f0 !important;
+}
+
+html.light [class*="bg-dark-700"],
+html.light .bg-dark-700 {
+  background-color: #e2e8f0 !important;
+}
+
+/* Borders & Dividers */
+html.light [class*="border-dark-800"],
+html.light [class*="border-dark-750"],
+html.light [class*="border-dark-700"],
+html.light [class*="border-dark-600"],
+html.light .border-dark-800,
+html.light .border-dark-750,
+html.light .border-dark-700,
+html.light .border-dark-600 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Text Hierarchy & Readability */
+html.light .text-white,
+html.light [class*="text-white"] {
+  color: #0f172a !important;
+}
+
+html.light .text-dark-100,
+html.light [class*="text-dark-100"] {
+  color: #1e293b !important;
+}
+
+html.light .text-dark-200,
+html.light [class*="text-dark-200"] {
+  color: #334155 !important;
+}
+
+html.light .text-dark-300,
+html.light [class*="text-dark-300"] {
+  color: #475569 !important;
+}
+
+html.light .text-dark-400,
+html.light [class*="text-dark-400"] {
+  color: #475569 !important; /* Elevated for strong WCAG contrast */
+}
+
+html.light .text-dark-500,
+html.light [class*="text-dark-500"] {
+  color: #64748b !important;
+}
+
+html.light ::placeholder,
+html.light [class*="placeholder:text-dark-500"]::placeholder {
+  color: #64748b !important;
+}
+
+/* Solid Colored Buttons & Active Badges MUST keep white text */
+html.light .btn-primary,
+html.light .btn-primary *,
+html.light .btn-danger,
+html.light .btn-danger *,
+html.light .btn-success,
+html.light .btn-success *,
+html.light .bg-info-600,
+html.light .bg-info-600 *,
+html.light .bg-income-600,
+html.light .bg-income-600 *,
+html.light .bg-expense-600,
+html.light .bg-expense-600 * {
+  color: #ffffff !important;
+}
+
+/* Reusable Card & Surface Glassmorphism */
+html.light .card {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .card-hover:hover,
+html.light [class*="hoverable"]:hover {
+  border-color: #94a3b8 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.09) !important;
+}
+
+/* Navigation, Header, Aside, Footer */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: #cbd5e1 !important;
+}
+
+html.light aside {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: #cbd5e1 !important;
+}
+
+html.light footer {
+  background-color: rgba(248, 250, 252, 0.94) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: #cbd5e1 !important;
+}
+
+html.light nav.fixed {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: #cbd5e1 !important;
+}
+
+/* Settings Tabs Bar & Active/Inactive States */
+html.light [class*="bg-dark-900/80"],
+html.light [class*="bg-dark-900\\/80"] {
+  background-color: rgba(241, 245, 249, 0.92) !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light [class*="hover:bg-dark-800"]:hover,
+html.light [class*="hover:bg-dark-800/60"]:hover,
+html.light [class*="hover:bg-dark-800\\/60"]:hover {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+/* Form Controls & Inputs */
+html.light .input,
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .input:focus,
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #2563eb !important;
+  outline: 2px solid rgba(37, 99, 235, 0.25) !important;
+}
+
+html.light .btn-outline {
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+  background-color: transparent !important;
+}
+
+html.light .btn-outline:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Financial Accent Texts (High contrast on light backgrounds) */
+html.light .text-income-400,
+html.light [class*="text-income-400"] {
+  color: #047857 !important; /* Emerald-700 */
+}
+
+html.light .text-expense-400,
+html.light [class*="text-expense-400"] {
+  color: #be123c !important; /* Rose-700 */
+}
+
+html.light .text-warning-400,
+html.light [class*="text-warning-400"] {
+  color: #b45309 !important; /* Amber-700 */
+}
+
+html.light .text-info-400,
+html.light [class*="text-info-400"] {
+  color: #1d4ed8 !important; /* Blue-700 */
+}
+
+html.light .text-purple-400,
+html.light [class*="text-purple-400"] {
+  color: #6d28d9 !important; /* Purple-700 */
+}
+
+html.light .text-amber-400,
+html.light [class*="text-amber-400"] {
+  color: #b45309 !important;
+}
+
+html.light .text-blue-400,
+html.light [class*="text-blue-400"] {
+  color: #1d4ed8 !important;
+}
+
+html.light .text-emerald-400,
+html.light [class*="text-emerald-400"] {
+  color: #047857 !important;
+}
+
+/* Badges (Frosted, crisp readable pills) */
+html.light .badge-success,
+html.light [class*="bg-income-500/15"],
+html.light [class*="bg-income-500\\/15"],
+html.light [class*="bg-income-400/10"],
+html.light [class*="bg-income-400\\/10"] {
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light .badge-danger,
+html.light [class*="bg-expense-500/15"],
+html.light [class*="bg-expense-500\\/15"],
+html.light [class*="bg-expense-400/10"],
+html.light [class*="bg-expense-400\\/10"] {
+  background-color: #fff1f2 !important;
+  color: #9f1239 !important;
+  border-color: #fecdd3 !important;
+}
+
+html.light .badge-warning,
+html.light [class*="bg-warning-500/15"],
+html.light [class*="bg-warning-500\\/15"],
+html.light [class*="bg-warning-400/10"],
+html.light [class*="bg-warning-400\\/10"],
+html.light [class*="bg-amber-400/10"],
+html.light [class*="bg-amber-400\\/10"] {
+  background-color: #fffbeb !important;
+  color: #92400e !important;
+  border-color: #fde68a !important;
+}
+
+html.light .badge-info,
+html.light [class*="bg-info-500/15"],
+html.light [class*="bg-info-500\\/15"],
+html.light [class*="bg-info-400/10"],
+html.light [class*="bg-info-400\\/10"],
+html.light [class*="bg-blue-400/10"],
+html.light [class*="bg-blue-400\\/10"] {
+  background-color: #eff6ff !important;
+  color: #1e40af !important;
+  border-color: #bfdbfe !important;
+}
+
+html.light .badge-neutral,
+html.light [class*="bg-dark-700"][class*="text-dark-300"] {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Modals & Dialogs */
+html.light [role="dialog"] {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.15), 0 10px 15px -5px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light [class*="bg-dark-950/80"],
+html.light [class*="bg-dark-950\\/80"] {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Recharts Tooltips & Charts in Light Mode */
+html.light .recharts-default-tooltip {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important;
+}
+
+html.light .recharts-cartesian-grid line {
+  stroke: #e2e8f0 !important;
+}
+
+html.light .recharts-text {
+  fill: #475569 !important;
+}
