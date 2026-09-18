@@ -220,3 +220,49 @@ Future changes should preserve the existing authentication/security model, multi
 ---
 
 Built with React, Node.js, Express, MongoDB, and a focus on practical financial software architecture.
+
+---
+
+## 📸 Screenshots
+
+### Authentication
+
+| Login | Registration |
+|---|---|
+| ![Login](docs/screenshots/01-login.png) | ![Registration](docs/screenshots/02-register.png) |
+
+### Dashboard
+
+![Financial Dashboard](docs/screenshots/03-dashboard.png)
+
+![Dashboard Details](docs/screenshots/04-dashboard-details.png)
+
+### Core Finance Features
+
+| Transactions | Monthly Budgets |
+|---|---|
+| ![Transactions](docs/screenshots/05-transactions.png) | ![Budgets](docs/screenshots/06-budgets.png) |
+
+![Savings Goals](docs/screenshots/07-savings-goals.png)
+
+### Analytics & Financial Intelligence
+
+![Financial Analytics](docs/screenshots/08-analytics.png)
+
+![Savings Trajectory](docs/screenshots/09-analytics-trajectory.png)
+
+![Spending Pace Analysis](docs/screenshots/10-spending-pace.png)
+
+### Settings
+
+![Settings & Preferences](docs/screenshots/11-settings.png)
+
+### Administration
+
+![Admin Dashboard](docs/screenshots/12-admin-dashboard.png)
+
+---
+
+## 🌐 Live Demo
+
+**SmartExpense:** https://smart-expense-blond.vercel.app
