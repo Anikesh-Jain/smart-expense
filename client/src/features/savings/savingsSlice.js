@@ -1,13 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axios';
+import { updateProfile } from '../auth/authSlice';
 
 // Fetch savings goals
 export const fetchSavingsGoals = createAsyncThunk(
   'savings/fetchAll',
-  async (status = '', { rejectWithValue }) => {
+  async (params = '', { rejectWithValue }) => {
     try {
+      const queryParams = typeof params === 'string'
+        ? (params ? { status: params } : {})
+        : (params || {});
       const response = await API.get('/savings-goals', {
-        params: status ? { status } : {}
+        params: queryParams
       });
       return response.data.data;
     } catch (error) {
@@ -128,6 +132,13 @@ const savingsSlice = createSlice({
         const index = state.goals.findIndex((g) => g._id === action.payload._id);
         if (index !== -1) {
           state.goals[index] = action.payload;
+        }
+      })
+      // Clear stale goals on display currency update
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        if (action.payload?.currency) {
+          state.goals = [];
+          state.currentGoal = null;
         }
       });
   },

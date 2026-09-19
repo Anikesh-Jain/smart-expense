@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Category = require('../models/Category');
 const { DEFAULT_EXPENSE_CATEGORIES, DEFAULT_INCOME_CATEGORIES } = require('../utils/helpers');
 const { sendPasswordResetEmail } = require('../utils/emailService');
+const { convertCurrency, getExchangeRates, BASELINE_RATES, roundCurrency } = require('../utils/currencyService');
 
 /**
  * Generate a signed JWT for a user ID.
@@ -13,6 +14,49 @@ const generateToken = (id) => {
     expiresIn: process.env.JWT_EXPIRE || '30d'
   });
 };
+
+/**
+ * Decorate user object with display converted baseline financial figures
+ */
+async function decorateUserWithDisplay(user) {
+  if (!user) return null;
+  const userObj = user && user.toObject ? user.toObject() : { ...user };
+  let rates;
+  try {
+    const rateData = await getExchangeRates();
+    rates = rateData.rates || BASELINE_RATES;
+  } catch {
+    rates = BASELINE_RATES;
+  }
+
+  const profileBaseCurrency = (userObj.profileBaseCurrency || 'INR').toUpperCase().trim();
+  const displayCurrency = (userObj.currency || 'INR').toUpperCase().trim();
+
+  const rawIncome = Number(userObj.monthlyIncome) || 0;
+  const rawFixed = Number(userObj.fixedExpenses) || 0;
+  const rawSavings = Number(userObj.savingsTarget) || 0;
+
+  const displayMonthlyIncome = roundCurrency(
+    convertCurrency(rawIncome, profileBaseCurrency, displayCurrency, rates),
+    displayCurrency
+  );
+  const displayFixedExpenses = roundCurrency(
+    convertCurrency(rawFixed, profileBaseCurrency, displayCurrency, rates),
+    displayCurrency
+  );
+  const displaySavingsTarget = roundCurrency(
+    convertCurrency(rawSavings, profileBaseCurrency, displayCurrency, rates),
+    displayCurrency
+  );
+
+  return {
+    ...userObj,
+    displayMonthlyIncome,
+    displayFixedExpenses,
+    displaySavingsTarget,
+    displayCurrency
+  };
+}
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -115,9 +159,10 @@ const login = async (req, res, next) => {
 // @access  Private
 const getMe = async (req, res, next) => {
   try {
+    const decoratedUser = await decorateUserWithDisplay(req.user);
     res.json({
       success: true,
-      data: req.user
+      data: decoratedUser
     });
   } catch (error) {
     next(error);
@@ -129,9 +174,9 @@ const getMe = async (req, res, next) => {
 // @access  Private
 const updateProfile = async (req, res, next) => {
   try {
-    // Only allow specific fields to be updated
+    // Allow profileBaseCurrency so baseline financial inputs preserve their native currency
     const allowedFields = [
-      'name', 'currency', 'monthlyIncome', 'fixedExpenses',
+      'name', 'currency', 'profileBaseCurrency', 'monthlyIncome', 'fixedExpenses',
       'savingsTarget', 'incomeDay', 'onboardingCompleted'
     ];
 
@@ -155,9 +200,11 @@ const updateProfile = async (req, res, next) => {
       });
     }
 
+    const decoratedUser = await decorateUserWithDisplay(user);
+
     res.json({
       success: true,
-      data: user
+      data: decoratedUser
     });
   } catch (error) {
     next(error);

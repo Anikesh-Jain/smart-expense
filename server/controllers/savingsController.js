@@ -11,7 +11,7 @@ const {
 /**
  * Helper to get active rates and display currency for a user.
  */
-async function getRatesAndDisplayCurrency(user) {
+async function getRatesAndDisplayCurrency(user, overrideCurrency = null) {
   let rates;
   try {
     const rateData = await getExchangeRates();
@@ -19,7 +19,7 @@ async function getRatesAndDisplayCurrency(user) {
   } catch {
     rates = BASELINE_RATES;
   }
-  const displayCurrency = (user && user.currency) || 'INR';
+  const displayCurrency = (overrideCurrency || (user && user.currency) || 'INR').toUpperCase().trim();
   return { rates, displayCurrency };
 }
 
@@ -65,7 +65,7 @@ const getSavingsGoals = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user, req.query.displayCurrency);
 
     let totalSavedInDisplayCurrency = 0;
     const goalsWithDisplay = goals.map(g => {
@@ -109,7 +109,7 @@ const getSavingsGoal = async (req, res, next) => {
       });
     }
 
-    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user, req.query.displayCurrency);
 
     res.status(200).json({
       success: true,

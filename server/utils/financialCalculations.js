@@ -148,7 +148,8 @@ const calculateSpendingPace = ({
     safeWeeklyLimit,
     projectedEndOfMonthBalance,
     status,
-    message
+    message,
+    currency
   };
 };
 
@@ -184,7 +185,8 @@ const calculateWillMoneyLast = ({
       availableBalance: balance,
       explanation: balance < 0
         ? `You currently have a negative balance (${sym}${balance}). Any new expense will increase your deficit.`
-        : `Your balance is ${sym}0. You have no money remaining for the remaining ${remaining} days of the month.`
+        : `Your balance is ${sym}0. You have no money remaining for the remaining ${remaining} days of the month.`,
+      currency
     };
   }
 
@@ -197,7 +199,8 @@ const calculateWillMoneyLast = ({
       shortfallDate: null,
       averageDailySpending: 0,
       availableBalance: balance,
-      explanation: `You have recorded no daily expenses this month. Your balance of ${sym}${balance} is 100% intact.`
+      explanation: `You have recorded no daily expenses this month. Your balance of ${sym}${balance} is 100% intact.`,
+      currency
     };
   }
 
@@ -212,7 +215,8 @@ const calculateWillMoneyLast = ({
       shortfallDate: null,
       averageDailySpending: avgDailySpending,
       availableBalance: balance,
-      explanation: `At your current spending rate of ${sym}${avgDailySpending}/day, your balance will last ${daysSupported} days, comfortably covering the ${remaining} days left in the month.`
+      explanation: `At your current spending rate of ${sym}${avgDailySpending}/day, your balance will last ${daysSupported} days, comfortably covering the ${remaining} days left in the month.`,
+      currency
     };
   }
 
@@ -229,7 +233,8 @@ const calculateWillMoneyLast = ({
     shortfallDate,
     averageDailySpending: avgDailySpending,
     availableBalance: balance,
-    explanation: `At your current spending pace of ${sym}${avgDailySpending}/day, your available balance of ${sym}${balance} will last only ${daysSupported} days. You are projected to run out on ${shortfallDate}, before the month ends (${remaining} days remaining).`
+    explanation: `At your current spending pace of ${sym}${avgDailySpending}/day, your available balance of ${sym}${balance} will last only ${daysSupported} days. You are projected to run out on ${shortfallDate}, before the month ends (${remaining} days remaining).`,
+    currency
   };
 };
 
@@ -443,7 +448,8 @@ const calculateFinancialHealthScore = ({
       savingsProgress: { score: round2(savingsScore), max: 20, reason: savingsReason },
       balanceHealth: { score: round2(balanceScore), max: 15, reason: balanceReason },
       expenseConsistency: { score: round2(consistencyScore), max: 15, reason: consistencyReason }
-    }
+    },
+    currency
   };
 };
 
@@ -545,14 +551,15 @@ const generateSmartSuggestions = ({
   if (currentBudget && currentBudget.categoryBudgets && currentBudget.categoryBudgets.length > 0) {
     currentBudget.categoryBudgets.forEach(cb => {
       const match = categoryTotals.find(ct => ct.category.toLowerCase() === cb.category.toLowerCase());
-      if (match && match.total > cb.amount) {
-        const overage = round2(match.total - cb.amount);
+      const budgetLimit = cb.displayAmount !== undefined ? cb.displayAmount : cb.amount;
+      if (match && match.total > budgetLimit) {
+        const overage = round2(match.total - budgetLimit);
         suggestions.push({
           id: `budget-overrun-${cb.category.toLowerCase()}`,
           type: 'warning',
           priority: 'high',
           title: `${cb.category} Budget Exceeded`,
-          message: `You have spent ${sym}${match.total} on ${cb.category}, exceeding your set budget of ${sym}${cb.amount} by ${sym}${overage}.`
+          message: `You have spent ${sym}${match.total} on ${cb.category}, exceeding your set budget of ${sym}${budgetLimit} by ${sym}${overage}.`
         });
       }
     });
@@ -683,7 +690,8 @@ const generateSmartSavingPlan = ({
       disposableIncome: availableMonthlyMargin
     },
     suggestedReductions: reductionSuggestions,
-    disclaimer: 'These projections and suggested category reductions are estimates based on your parameters and do not guarantee future savings.'
+    disclaimer: 'These projections and suggested category reductions are estimates based on your parameters and do not guarantee future savings.',
+    currency
   };
 };
 

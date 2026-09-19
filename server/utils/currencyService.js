@@ -155,9 +155,10 @@ function getCachedRates() {
  * @param {string} fromCur - Source currency code (e.g. 'INR')
  * @param {string} toCur - Target currency code (e.g. 'USD')
  * @param {object} [rates] - Exchange rates relative to USD (defaults to cache)
- * @returns {number} Converted unrounded amount
+ * @param {boolean} [shouldRound=false] - Whether to round to currency decimal precision
+ * @returns {number} Converted amount
  */
-function convertCurrency(amount, fromCur = 'INR', toCur = 'INR', rates = null) {
+function convertCurrency(amount, fromCur = 'INR', toCur = 'INR', rates = null, shouldRound = false) {
   const num = Number(amount);
   if (isNaN(num) || !isFinite(num) || num === 0) return 0;
 
@@ -165,7 +166,7 @@ function convertCurrency(amount, fromCur = 'INR', toCur = 'INR', rates = null) {
   const to = String(toCur || 'INR').toUpperCase().trim();
 
   if (from === to) {
-    return num;
+    return shouldRound ? roundCurrency(num, to) : num;
   }
 
   const activeRates = rates || rateCache.rates || BASELINE_RATES;
@@ -173,7 +174,8 @@ function convertCurrency(amount, fromCur = 'INR', toCur = 'INR', rates = null) {
   const toRate = activeRates[to] || BASELINE_RATES[to] || 1.0;
 
   // Exact formula: amount in USD = amount / fromRate; amount in toCur = (amount / fromRate) * toRate
-  return (num / fromRate) * toRate;
+  const converted = (num / fromRate) * toRate;
+  return shouldRound ? roundCurrency(converted, to) : converted;
 }
 
 /**

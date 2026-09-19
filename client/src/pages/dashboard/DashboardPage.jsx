@@ -30,7 +30,7 @@ import {
   Legend,
   CartesianGrid
 } from 'recharts';
-import { getCurrencySymbol, getTransactionCurrencyDisplay } from '../../utils/currency';
+import { getTransactionCurrencyDisplay, formatCurrency } from '../../utils/currency';
 import { formatShortDate } from '../../utils/date';
 
 const DashboardPage = () => {
@@ -42,14 +42,13 @@ const DashboardPage = () => {
   const { spendingPace, financialHealth, monthlyTrends } = useSelector((state) => state.analytics);
 
   const currencyCode = user?.currency || 'INR';
-  const currencySymbol = getCurrencySymbol(currencyCode);
 
   const loadDashboardData = useCallback(() => {
-    dispatch(fetchDashboardOverview());
-    dispatch(fetchSpendingPace());
-    dispatch(fetchFinancialHealth());
-    dispatch(fetchMonthlyTrends(6));
-  }, [dispatch]);
+    dispatch(fetchDashboardOverview({ displayCurrency: currencyCode }));
+    dispatch(fetchSpendingPace({ displayCurrency: currencyCode }));
+    dispatch(fetchFinancialHealth({ displayCurrency: currencyCode }));
+    dispatch(fetchMonthlyTrends({ months: 6, displayCurrency: currencyCode }));
+  }, [dispatch, currencyCode]);
 
   useEffect(() => {
     loadDashboardData();
@@ -142,7 +141,7 @@ const DashboardPage = () => {
             <Badge variant={currentBalance >= 0 ? 'info' : 'danger'}>Real-Time</Badge>
           </div>
           <p className={`text-2xl sm:text-3xl font-bold tracking-tight ${currentBalance < 0 ? 'text-expense-400' : 'text-white'}`}>
-            {currencySymbol}{currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatCurrency(currentBalance, currencyCode)}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-xs text-dark-400">
             <FiShield className="text-info-400" />
@@ -157,7 +156,7 @@ const DashboardPage = () => {
             <Badge variant="success">Income</Badge>
           </div>
           <p className="text-2xl sm:text-3xl font-bold text-income-400 tracking-tight">
-            +{currencySymbol}{monthlyIncome.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            +{formatCurrency(monthlyIncome, currencyCode)}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-xs text-dark-400">
             <FiTrendingUp className="text-income-400" />
@@ -172,7 +171,7 @@ const DashboardPage = () => {
             <Badge variant="danger">Expense</Badge>
           </div>
           <p className="text-2xl sm:text-3xl font-bold text-expense-400 tracking-tight">
-            -{currencySymbol}{monthlyExpenses.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            -{formatCurrency(monthlyExpenses, currencyCode)}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-xs text-dark-400">
             <FiTrendingDown className="text-expense-400" />
@@ -187,7 +186,7 @@ const DashboardPage = () => {
             <Badge variant={paceVariant}>{paceStatus}</Badge>
           </div>
           <p className="text-2xl sm:text-3xl font-bold text-warning-400 tracking-tight">
-            {currencySymbol}{safeDaily.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatCurrency(safeDaily, currencyCode)}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-xs text-dark-400">
             <FiClock className="text-warning-400" />
@@ -226,7 +225,7 @@ const DashboardPage = () => {
                       stroke="#94a3b8"
                       fontSize={12}
                       tickLine={false}
-                      tickFormatter={(val) => `${currencySymbol}${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
+                      tickFormatter={(val) => formatCurrency(val, currencyCode)}
                     />
                     <Tooltip
                       contentStyle={{
@@ -236,7 +235,7 @@ const DashboardPage = () => {
                         fontSize: '0.813rem',
                         color: '#f8fafc',
                       }}
-                      formatter={(val) => [`${currencySymbol}${Number(val).toFixed(2)}`]}
+                      formatter={(val) => [formatCurrency(Number(val), currencyCode)]}
                     />
                     <Legend wrapperStyle={{ fontSize: '0.75rem', paddingTop: '10px' }} />
                     <Bar dataKey="Income" fill="#10b981" radius={[6, 6, 0, 0]} />
@@ -403,7 +402,7 @@ const DashboardPage = () => {
                   <div className="flex items-center justify-between text-xs font-medium">
                     <span className="text-white truncate">{cat.category}</span>
                     <span className="text-dark-400 shrink-0">
-                      {currencySymbol}{Number(cat.total || 0).toFixed(2)} ({Number(cat.percentage || 0).toFixed(0)}%)
+                      {formatCurrency(Number(cat.total || 0), currencyCode)} ({Number(cat.percentage || 0).toFixed(0)}%)
                     </span>
                   </div>
                   <ProgressBar

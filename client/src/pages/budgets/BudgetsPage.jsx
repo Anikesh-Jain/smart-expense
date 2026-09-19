@@ -46,7 +46,6 @@ const BudgetsPage = () => {
   const { user } = useSelector((state) => state.auth);
 
   const currencyCode = user?.currency || 'INR';
-  const currencySymbol = getCurrencySymbol(currencyCode);
 
   const today = new Date();
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
@@ -66,11 +65,11 @@ const BudgetsPage = () => {
 
   // Load budgets & categories
   const loadData = useCallback(() => {
-    dispatch(fetchBudgets());
-    dispatch(fetchCurrentBudget());
+    dispatch(fetchBudgets({ displayCurrency: currencyCode }));
+    dispatch(fetchCurrentBudget({ displayCurrency: currencyCode }));
     dispatch(fetchCategories());
-    dispatch(fetchCategoryBreakdown({ month: selectedMonth, year: selectedYear, type: 'expense' }));
-  }, [dispatch, selectedMonth, selectedYear]);
+    dispatch(fetchCategoryBreakdown({ month: selectedMonth, year: selectedYear, type: 'expense', displayCurrency: currencyCode }));
+  }, [dispatch, selectedMonth, selectedYear, currencyCode]);
 
   useEffect(() => {
     loadData();
@@ -321,13 +320,13 @@ const BudgetsPage = () => {
                 <div className="p-4 rounded-xl bg-dark-900 border border-dark-750">
                   <span className="text-xs text-dark-400 font-medium">Total Spent So Far</span>
                   <p className="text-xl sm:text-2xl font-bold text-expense-400 mt-1">
-                    {currencySymbol}{totalSpent.toFixed(2)}
+                    {formatCurrency(totalSpent, currencyCode)}
                   </p>
                 </div>
                 <div className="p-4 rounded-xl bg-dark-900 border border-dark-750">
                   <span className="text-xs text-dark-400 font-medium">Remaining Budget</span>
                   <p className={`text-xl sm:text-2xl font-bold mt-1 ${remainingBudget < 0 ? 'text-expense-400' : 'text-income-400'}`}>
-                    {remainingBudget < 0 ? '-' : ''}{currencySymbol}{Math.abs(remainingBudget).toFixed(2)}
+                    {formatCurrency(remainingBudget, currencyCode)}
                   </p>
                 </div>
               </div>
@@ -363,7 +362,7 @@ const BudgetsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {activeBudget.categoryBudgets.map((cb) => {
                   const spent = categorySpentMap[cb.category] || 0;
-                  const limit = cb.amount * budgetRatio;
+                  const limit = cb.displayAmount !== undefined ? cb.displayAmount : (cb.amount * budgetRatio);
                   const pct = limit > 0 ? Math.round((spent / limit) * 100) : 0;
                   const remaining = limit - spent;
                   const isOver = pct > 100;
@@ -380,14 +379,14 @@ const BudgetsPage = () => {
 
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-dark-400">
-                          Spent: <strong className="text-white">{currencySymbol}{spent.toFixed(2)}</strong>
+                          Spent: <strong className="text-white">{formatCurrency(spent, currencyCode)}</strong>
                         </span>
                         <span className="text-dark-400">
                           Limit: <strong className="text-white">
-                            {formatCurrency(limit, budgetDisplay.displayCurrency, budgetDisplay.displayCurrency !== 'JPY')}
+                            {formatCurrency(limit, budgetDisplay.displayCurrency)}
                             {budgetDisplay.isDifferentCurrency && (
                               <span className="text-dark-400 ml-1 font-normal">
-                                (orig. {formatCurrency(cb.amount, budgetDisplay.originalCurrency, false)})
+                                (orig. {formatCurrency(cb.amount, budgetDisplay.originalCurrency)})
                               </span>
                             )}
                           </strong>
@@ -404,7 +403,7 @@ const BudgetsPage = () => {
                       <div className="flex items-center justify-between text-xs pt-1 border-t border-dark-750/50">
                         <span className="text-dark-400">Remaining</span>
                         <span className={remaining < 0 ? 'text-expense-400 font-bold' : 'text-income-400 font-medium'}>
-                          {remaining < 0 ? `Over by ${currencySymbol}${Math.abs(remaining).toFixed(2)}` : `${currencySymbol}${remaining.toFixed(2)}`}
+                          {remaining < 0 ? `Over by ${formatCurrency(Math.abs(remaining), currencyCode)}` : formatCurrency(remaining, currencyCode)}
                         </span>
                       </div>
                     </Card>
@@ -417,7 +416,7 @@ const BudgetsPage = () => {
                   <FiAlertTriangle className="text-2xl text-warning-400 mx-auto mb-2" />
                   <p className="text-sm font-medium text-white mb-1">No category limits defined yet</p>
                   <p className="text-xs text-dark-400 max-w-sm mx-auto mb-4">
-                    You have an overall budget of {currencySymbol}{totalBudgetAmount.toFixed(2)}, but no specific limits for individual categories (Mess, Books, Travel).
+                    You have an overall budget of {formatCurrency(totalBudgetAmount, currencyCode)}, but no specific limits for individual categories (Mess, Books, Travel).
                   </p>
                   <Button variant="secondary" size="sm" onClick={handleOpenModal}>
                     Add Category Limits
@@ -470,7 +469,7 @@ const BudgetsPage = () => {
               <label className="label mb-0">Category Specific Limits (Optional)</label>
               {sumOfAllocations > 0 && (
                 <span className={`text-xs ${Number(budgetTotal) > 0 && sumOfAllocations > Number(budgetTotal) ? 'text-expense-400 font-semibold' : 'text-dark-400'}`}>
-                  Sum: {currencySymbol}{sumOfAllocations.toFixed(0)} / {budgetTotal ? `${currencySymbol}${Number(budgetTotal).toFixed(0)}` : '--'}
+                  Sum: {getCurrencySymbol(budgetCurrency)}{sumOfAllocations.toFixed(0)} / {budgetTotal ? `${getCurrencySymbol(budgetCurrency)}${Number(budgetTotal).toFixed(0)}` : '--'}
                 </span>
               )}
             </div>

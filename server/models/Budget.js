@@ -56,11 +56,13 @@ const budgetSchema = new mongoose.Schema({
 // One budget per user per month/year combination
 budgetSchema.index({ user: 1, month: 1, year: 1 }, { unique: true });
 
+const { BASELINE_RATES } = require('../utils/currencyService');
+
 // Default baseBudgetUSD if not explicitly provided
 budgetSchema.pre('save', function (next) {
   if (this.baseBudgetUSD === undefined || this.baseBudgetUSD === null) {
-    const cur = this.currency || 'INR';
-    const rate = cur === 'USD' ? 1.0 : (cur === 'INR' ? 96.0 : 1.0);
+    const cur = (this.currency || 'INR').toUpperCase().trim();
+    const rate = BASELINE_RATES[cur] || 1.0;
     this.baseBudgetUSD = cur === 'USD' ? this.totalBudget : (this.totalBudget / rate);
   }
   next();

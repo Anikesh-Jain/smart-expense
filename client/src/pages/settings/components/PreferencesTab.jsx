@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../../../features/auth/authSlice';
 import { useTheme } from '../../../context/useTheme';
@@ -24,6 +24,12 @@ const PreferencesTab = () => {
 
   const [selectedCurrency, setSelectedCurrency] = useState(user?.currency || 'INR');
   const [isSavingCurrency, setIsSavingCurrency] = useState(false);
+
+  useEffect(() => {
+    if (user?.currency) {
+      setSelectedCurrency(user.currency);
+    }
+  }, [user?.currency]);
 
   // Student Smart Notification Toggles (persisted locally)
   const [alerts, setAlerts] = useState(() => {

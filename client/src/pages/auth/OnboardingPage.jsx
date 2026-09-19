@@ -52,6 +52,7 @@ const OnboardingPage = () => {
       savingsTarget: Number(formData.savingsTarget) || 0,
       incomeDay: Number(formData.incomeDay) || 1,
       currency: formData.currency,
+      profileBaseCurrency: formData.currency,
       onboardingCompleted: true,
     };
 

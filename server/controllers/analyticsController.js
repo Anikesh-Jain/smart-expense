@@ -18,7 +18,7 @@ const { convertCurrency, getExchangeRates, BASELINE_RATES } = require('../utils/
  * Get current exchange rates (or fallback) and the user's display currency.
  * Returns { rates, displayCurrency }.
  */
-async function getRatesAndCurrency(user) {
+async function getRatesAndCurrency(user, overrideCurrency = null) {
   let rates;
   try {
     const rateData = await getExchangeRates();
@@ -26,8 +26,29 @@ async function getRatesAndCurrency(user) {
   } catch {
     rates = BASELINE_RATES;
   }
-  const displayCurrency = (user && user.currency) || 'INR';
+  const displayCurrency = (overrideCurrency || (user && user.currency) || 'INR').toUpperCase().trim();
   return { rates, displayCurrency };
+}
+
+/**
+ * Helper to convert category budgets to display currency for smart suggestions
+ */
+function convertCategoryBudgets(budget, displayCurrency, rates) {
+  if (!budget || !budget.categoryBudgets) return [];
+  const bCur = (budget.currency || 'INR').toUpperCase().trim();
+  return budget.categoryBudgets.map(cb => {
+    const origAmount = Number(cb.amount) || 0;
+    const displayAmount = bCur === displayCurrency
+      ? origAmount
+      : round2(convertCurrency(origAmount, bCur, displayCurrency, rates));
+    return {
+      category: cb.category,
+      amount: origAmount,
+      displayAmount,
+      currency: bCur,
+      displayCurrency
+    };
+  });
 }
 
 /**
@@ -79,7 +100,7 @@ const getDashboardOverview = async (req, res, next) => {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1; // 1-12
     const { start: monthStart, end: monthEnd } = getMonthRange(currentYear, currentMonth);
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
     const {
       baselineIncome,
       baselineFixedExpenses,
@@ -198,6 +219,7 @@ const getDashboardOverview = async (req, res, next) => {
         monthlyExpenses,
         recentTransactions,
         categorySummaries: formattedCategorySummaries,
+        displayCurrency,
         userProfile: {
           monthlyIncome: baselineIncome,
           fixedExpenses: baselineFixedExpenses,
@@ -218,7 +240,7 @@ const getMonthlyTrends = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const monthsLimit = Math.min(24, Math.max(1, parseInt(req.query.months, 10) || 6));
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
 
     // Calculate start date: N months ago
     const now = new Date();
@@ -275,6 +297,7 @@ const getMonthlyTrends = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: results.length,
+      currency: displayCurrency,
       data: results
     });
   } catch (error) {
@@ -292,7 +315,7 @@ const getCategoryBreakdown = async (req, res, next) => {
     const year = parseInt(req.query.year, 10) || now.getFullYear();
     const month = parseInt(req.query.month, 10) || now.getMonth() + 1;
     const type = req.query.type === 'income' ? 'income' : 'expense';
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
 
     const { start, end } = getMonthRange(year, month);
 
@@ -335,6 +358,7 @@ const getCategoryBreakdown = async (req, res, next) => {
         year,
         type,
         grandTotal,
+        currency: displayCurrency,
         categories,
         topCategories
       }
@@ -354,7 +378,7 @@ const getSpendingPace = async (req, res, next) => {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     const { start, end } = getMonthRange(currentYear, currentMonth);
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
     const { baselineIncome, baselineBalance } = getBaselineFinancials(req.user, displayCurrency, rates);
 
     // Parallel fetch: current month expenses, all-time balance, active budget
@@ -416,7 +440,8 @@ const getSpendingPace = async (req, res, next) => {
       success: true,
       data: {
         ...pace,
-        activeBudget: displayBudget
+        activeBudget: displayBudget,
+        currency: displayCurrency
       }
     });
   } catch (error) {
@@ -435,7 +460,7 @@ const getWillMoneyLast = async (req, res, next) => {
     const currentMonth = now.getMonth() + 1;
     const { start, end } = getMonthRange(currentYear, currentMonth);
     const { daysElapsed, daysRemaining } = getMonthProgress(now);
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
     const { baselineBalance } = getBaselineFinancials(req.user, displayCurrency, rates);
 
     const [spentAgg, allTimeAgg] = await Promise.all([
@@ -480,7 +505,10 @@ const getWillMoneyLast = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: projection
+      data: {
+        ...projection,
+        currency: displayCurrency
+      }
     });
   } catch (error) {
     next(error);
@@ -498,7 +526,7 @@ const getFinancialHealthScore = async (req, res, next) => {
     const currentMonth = now.getMonth() + 1;
     const { start, end } = getMonthRange(currentYear, currentMonth);
     const { daysElapsed, daysInMonth } = getMonthProgress(now);
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
     const {
       baselineIncome,
       baselineSavingsTarget,
@@ -594,7 +622,10 @@ const getFinancialHealthScore = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: health
+      data: {
+        ...health,
+        currency: displayCurrency
+      }
     });
   } catch (error) {
     next(error);
@@ -611,7 +642,7 @@ const getSmartSuggestions = async (req, res, next) => {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     const { start, end } = getMonthRange(currentYear, currentMonth);
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.query.displayCurrency);
     const { baselineIncome, baselineBalance } = getBaselineFinancials(req.user, displayCurrency, rates);
 
     // First week of month: day 1 to day 7
@@ -704,12 +735,22 @@ const getSmartSuggestions = async (req, res, next) => {
       currency: displayCurrency
     });
 
+    let displayBudgetObj = null;
+    if (budget) {
+      displayBudgetObj = {
+        ...budget,
+        totalBudget: displayBudget,
+        categoryBudgets: convertCategoryBudgets(budget, displayCurrency, rates),
+        currency: displayCurrency
+      };
+    }
+
     const suggestions = generateSmartSuggestions({
       categoryTotals,
       totalSpentThisMonth,
       currentBalance,
       monthlyIncome: baselineIncome,
-      currentBudget: budget,
+      currentBudget: displayBudgetObj,
       spendingPace,
       firstWeekSpend,
       currency: displayCurrency
@@ -718,6 +759,7 @@ const getSmartSuggestions = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: suggestions.length,
+      currency: displayCurrency,
       data: suggestions
     });
   } catch (error) {
@@ -732,7 +774,7 @@ const postSmartSavingPlan = async (req, res, next) => {
   try {
     const { targetAmount, targetDate } = req.body;
     const userId = req.user._id;
-    const { rates, displayCurrency } = await getRatesAndCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndCurrency(req.user, req.body.currency || req.query.displayCurrency);
     const { baselineIncome, baselineFixedExpenses } = getBaselineFinancials(req.user, displayCurrency, rates);
 
     // Fetch user recent category spending for realistic suggestions
@@ -782,7 +824,10 @@ const postSmartSavingPlan = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: plan
+      data: {
+        ...plan,
+        currency: displayCurrency
+      }
     });
   } catch (error) {
     next(error);

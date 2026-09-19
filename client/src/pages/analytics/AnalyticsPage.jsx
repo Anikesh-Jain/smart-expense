@@ -27,7 +27,7 @@ import {
   CartesianGrid
 } from 'recharts';
 
-import { getCurrencySymbol } from '../../utils/currency';
+import { getCurrencySymbol, formatCurrency } from '../../utils/currency';
 
 const CHART_COLORS = [
   '#38bdf8', // sky-400
@@ -54,9 +54,9 @@ const AnalyticsPage = () => {
   const [monthsRange, setMonthsRange] = useState(6); // 6 or 12
 
   useEffect(() => {
-    dispatch(fetchMonthlyTrends(monthsRange));
-    dispatch(fetchCategoryBreakdown({ type: 'expense' }));
-  }, [dispatch, monthsRange]);
+    dispatch(fetchMonthlyTrends({ months: monthsRange, displayCurrency: currencyCode }));
+    dispatch(fetchCategoryBreakdown({ type: 'expense', displayCurrency: currencyCode }));
+  }, [dispatch, monthsRange, currencyCode]);
 
   // Check if any financial data exists
   const hasMonthlyData = monthlyTrends && monthlyTrends.length > 0 && monthlyTrends.some((d) => d.income > 0 || d.expenses > 0);
@@ -125,7 +125,7 @@ const AnalyticsPage = () => {
             <Badge variant="success">Income</Badge>
           </div>
           <p className="text-2xl font-bold text-income-400 tracking-tight">
-            +{currencySymbol}{totalPeriodIncome.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+            +{formatCurrency(totalPeriodIncome, currencyCode)}
           </p>
           <span className="text-xs text-dark-400 mt-1 block">In last {monthsRange} months</span>
         </Card>
@@ -136,7 +136,7 @@ const AnalyticsPage = () => {
             <Badge variant="danger">Expense</Badge>
           </div>
           <p className="text-2xl font-bold text-expense-400 tracking-tight">
-            -{currencySymbol}{totalPeriodExpenses.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+            -{formatCurrency(totalPeriodExpenses, currencyCode)}
           </p>
           <span className="text-xs text-dark-400 mt-1 block">In last {monthsRange} months</span>
         </Card>
@@ -149,7 +149,7 @@ const AnalyticsPage = () => {
             </Badge>
           </div>
           <p className={`text-2xl font-bold tracking-tight ${netSavingsPeriod < 0 ? 'text-expense-400' : 'text-white'}`}>
-            {netSavingsPeriod < 0 ? '-' : '+'}{currencySymbol}{Math.abs(netSavingsPeriod).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+            {netSavingsPeriod < 0 ? '-' : '+'}{formatCurrency(Math.abs(netSavingsPeriod), currencyCode)}
           </p>
           <span className="text-xs text-dark-400 mt-1 block">Inflow minus outflow</span>
         </Card>
@@ -209,7 +209,13 @@ const AnalyticsPage = () => {
                         stroke="#94a3b8"
                         fontSize={12}
                         tickLine={false}
-                        tickFormatter={(val) => `${currencySymbol}${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
+                        tickFormatter={(val) => {
+                          if (Math.abs(val) >= 1000) {
+                            const kVal = val / 1000;
+                            return `${currencySymbol}${kVal % 1 === 0 ? kVal.toFixed(0) : kVal.toFixed(1)}k`;
+                          }
+                          return formatCurrency(val, currencyCode, false);
+                        }}
                       />
                       <Tooltip
                         contentStyle={{
@@ -219,7 +225,7 @@ const AnalyticsPage = () => {
                           color: '#f8fafc',
                           fontSize: '0.813rem',
                         }}
-                        formatter={(val) => [`${currencySymbol}${Number(val).toFixed(2)}`]}
+                        formatter={(val) => [formatCurrency(val, currencyCode)]}
                       />
                       <Legend wrapperStyle={{ fontSize: '0.75rem', paddingTop: '10px' }} />
                       <Bar dataKey="income" name="Income" fill="#10b981" radius={[6, 6, 0, 0]} />
@@ -269,7 +275,7 @@ const AnalyticsPage = () => {
                               color: '#f8fafc',
                             }}
                             formatter={(val, name, entry) => [
-                              `${currencySymbol}${Number(val).toFixed(2)} (${entry.payload.percentage}%)`,
+                              `${formatCurrency(val, currencyCode)} (${entry.payload.percentage}%)`,
                               name,
                             ]}
                           />
@@ -289,7 +295,7 @@ const AnalyticsPage = () => {
                             <span className="text-white truncate">{cat.name}</span>
                           </div>
                           <span className="text-dark-300 font-semibold shrink-0">
-                            {currencySymbol}{cat.value.toFixed(0)} ({cat.percentage}%)
+                            {formatCurrency(cat.value, currencyCode)} ({cat.percentage}%)
                           </span>
                         </div>
                       ))}
@@ -325,7 +331,13 @@ const AnalyticsPage = () => {
                       stroke="#94a3b8"
                       fontSize={12}
                       tickLine={false}
-                      tickFormatter={(val) => `${currencySymbol}${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
+                      tickFormatter={(val) => {
+                        if (Math.abs(val) >= 1000) {
+                          const kVal = val / 1000;
+                          return `${currencySymbol}${kVal % 1 === 0 ? kVal.toFixed(0) : kVal.toFixed(1)}k`;
+                        }
+                        return formatCurrency(val, currencyCode, false);
+                      }}
                     />
                     <Tooltip
                       contentStyle={{
@@ -335,7 +347,7 @@ const AnalyticsPage = () => {
                         color: '#f8fafc',
                         fontSize: '0.813rem',
                       }}
-                      formatter={(val) => [`${currencySymbol}${Number(val).toFixed(2)}`, 'Net Savings']}
+                      formatter={(val) => [formatCurrency(val, currencyCode), 'Net Savings']}
                     />
                     <Legend wrapperStyle={{ fontSize: '0.75rem', paddingTop: '10px' }} />
                     <Line

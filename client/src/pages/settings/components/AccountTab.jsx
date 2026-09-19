@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import API from '../../../api/axios';
@@ -41,7 +41,6 @@ const AccountTab = () => {
   });
 
   const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const initialSyncRef = useRef(false);
   const activeCurrencySymbol = getCurrencySymbol(user?.currency || 'INR');
 
   // Password Form State
@@ -58,13 +57,12 @@ const AccountTab = () => {
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
-    if (user && !initialSyncRef.current) {
-      initialSyncRef.current = true;
+    if (user) {
       setProfileData({
         name: user.name || '',
-        monthlyIncome: user.monthlyIncome ?? '',
-        fixedExpenses: user.fixedExpenses ?? '',
-        savingsTarget: user.savingsTarget ?? '',
+        monthlyIncome: user.displayMonthlyIncome !== undefined ? user.displayMonthlyIncome : (user.monthlyIncome ?? ''),
+        fixedExpenses: user.displayFixedExpenses !== undefined ? user.displayFixedExpenses : (user.fixedExpenses ?? ''),
+        savingsTarget: user.displaySavingsTarget !== undefined ? user.displaySavingsTarget : (user.savingsTarget ?? ''),
         incomeDay: user.incomeDay ?? 1,
       });
     }
@@ -90,6 +88,7 @@ const AccountTab = () => {
       fixedExpenses: Number(profileData.fixedExpenses) || 0,
       savingsTarget: Number(profileData.savingsTarget) || 0,
       incomeDay: Number(profileData.incomeDay) || 1,
+      profileBaseCurrency: user?.currency || 'INR',
     };
 
     const result = await dispatch(updateProfile(payload));

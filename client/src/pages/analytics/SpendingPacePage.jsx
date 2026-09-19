@@ -23,7 +23,7 @@ import {
   FiRefreshCw
 } from 'react-icons/fi';
 
-import { getCurrencySymbol } from '../../utils/currency';
+import { formatCurrency } from '../../utils/currency';
 import { formatFullDate } from '../../utils/date';
 
 const SpendingPacePage = () => {
@@ -34,13 +34,12 @@ const SpendingPacePage = () => {
   const { user } = useSelector((state) => state.auth);
 
   const currencyCode = user?.currency || 'INR';
-  const currencySymbol = getCurrencySymbol(currencyCode);
 
   const loadData = useCallback(() => {
-    dispatch(fetchSpendingPace());
-    dispatch(fetchWillMoneyLast());
-    dispatch(fetchSmartSuggestions());
-  }, [dispatch]);
+    dispatch(fetchSpendingPace({ displayCurrency: currencyCode }));
+    dispatch(fetchWillMoneyLast({ displayCurrency: currencyCode }));
+    dispatch(fetchSmartSuggestions({ displayCurrency: currencyCode }));
+  }, [dispatch, currencyCode]);
 
   useEffect(() => {
     loadData();
@@ -140,7 +139,7 @@ const SpendingPacePage = () => {
         <div className="text-right sm:shrink-0">
           <span className="text-xs text-dark-400 block font-medium">Safe Daily Limit</span>
           <span className="text-xl font-extrabold text-white">
-            {currencySymbol}{safeDaily.toFixed(2)}/day
+            {formatCurrency(safeDaily, currencyCode)}/day
           </span>
         </div>
       </div>
@@ -154,7 +153,7 @@ const SpendingPacePage = () => {
             <FiClock className="text-warning-400" />
           </div>
           <p className="text-2xl font-bold text-warning-400 tracking-tight">
-            {currencySymbol}{safeDaily.toFixed(2)}
+            {formatCurrency(safeDaily, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">For next {daysRemaining} days</span>
         </Card>
@@ -166,7 +165,7 @@ const SpendingPacePage = () => {
             <FiCalendar className="text-info-400" />
           </div>
           <p className="text-2xl font-bold text-white tracking-tight">
-            {currencySymbol}{safeWeekly.toFixed(2)}
+            {formatCurrency(safeWeekly, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">Recommended weekly cap</span>
         </Card>
@@ -178,7 +177,7 @@ const SpendingPacePage = () => {
             <FiTrendingDown className="text-expense-400" />
           </div>
           <p className="text-2xl font-bold text-expense-400 tracking-tight">
-            {currencySymbol}{avgDaily.toFixed(2)}
+            {formatCurrency(avgDaily, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">Avg spend/day so far</span>
         </Card>
@@ -190,7 +189,7 @@ const SpendingPacePage = () => {
             <FiCompass className="text-dark-300" />
           </div>
           <p className="text-2xl font-bold text-white tracking-tight">
-            {currencySymbol}{projectedSpend.toFixed(2)}
+            {formatCurrency(projectedSpend, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">Month-end projection</span>
         </Card>
@@ -204,7 +203,7 @@ const SpendingPacePage = () => {
             </Badge>
           </div>
           <p className={`text-2xl font-bold tracking-tight ${projectedBalance < 0 ? 'text-expense-400' : 'text-income-400'}`}>
-            {projectedBalance < 0 ? '-' : ''}{currencySymbol}{Math.abs(projectedBalance).toFixed(2)}
+            {formatCurrency(projectedBalance, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">On last day of month</span>
         </Card>
@@ -242,7 +241,7 @@ const SpendingPacePage = () => {
             <p className="text-xs text-dark-300 leading-relaxed pt-1">
               To finish the month without a cash deficit, keep your total spending across the remaining {daysRemaining} days below{' '}
               <strong className="text-white">
-                {currencySymbol}{(spendingPace?.availableBalance || 0).toFixed(2)}
+                {formatCurrency(spendingPace?.availableBalance || 0, currencyCode)}
               </strong>.
             </p>
           </CardContent>
@@ -288,7 +287,7 @@ const SpendingPacePage = () => {
                 <span>
                   Action needed: Reduce daily discretionary expenditure by at least{' '}
                   <strong>
-                    {currencySymbol}{Math.max(10, Math.round(avgDaily - safeDaily)).toFixed(0)}/day
+                    {formatCurrency(Math.max(1, Math.round(avgDaily - safeDaily)), currencyCode)}/day
                   </strong>{' '}
                   to prevent running out of money before month-end.
                 </span>

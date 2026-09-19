@@ -233,7 +233,7 @@ const createTransaction = async (req, res, next) => {
       historicalRateToUSD
     });
 
-    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user, req.query.displayCurrency);
     const decorated = decorateTransactionWithDisplay(transaction, displayCurrency, rates);
 
     res.status(201).json({
@@ -282,7 +282,7 @@ const updateTransaction = async (req, res, next) => {
 
     await transaction.save();
 
-    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user);
+    const { rates, displayCurrency } = await getRatesAndDisplayCurrency(req.user, req.query.displayCurrency);
     const decorated = decorateTransactionWithDisplay(transaction, displayCurrency, rates);
 
     res.status(200).json({

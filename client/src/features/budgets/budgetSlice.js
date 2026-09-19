@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axios';
+import { updateProfile } from '../auth/authSlice';
 
 // Fetch all budgets
 export const fetchBudgets = createAsyncThunk(
   'budgets/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/budgets');
+      const response = await API.get('/budgets', { params });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch budgets');
@@ -17,9 +18,9 @@ export const fetchBudgets = createAsyncThunk(
 // Fetch current month budget
 export const fetchCurrentBudget = createAsyncThunk(
   'budgets/fetchCurrent',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/budgets/current');
+      const response = await API.get('/budgets/current', { params });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch current budget');
@@ -143,6 +144,13 @@ const budgetSlice = createSlice({
         state.loading = false;
         state.budgets = state.budgets.filter((b) => b._id !== action.payload);
         if (state.currentBudget?._id === action.payload) {
+          state.currentBudget = null;
+        }
+      })
+      // Clear stale budgets on display currency update
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        if (action.payload?.currency) {
+          state.budgets = [];
           state.currentBudget = null;
         }
       });

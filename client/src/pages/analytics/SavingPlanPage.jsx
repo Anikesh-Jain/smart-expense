@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { generateSavingPlan, clearSavingPlan } from '../../features/analytics/analyticsSlice';
@@ -23,7 +23,7 @@ import {
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
-import { getCurrencySymbol } from '../../utils/currency';
+import { getCurrencySymbol, formatCurrency } from '../../utils/currency';
 
 const SavingPlanPage = () => {
   const dispatch = useDispatch();
@@ -34,6 +34,10 @@ const SavingPlanPage = () => {
 
   const currencyCode = user?.currency || 'INR';
   const currencySymbol = getCurrencySymbol(currencyCode);
+
+  useEffect(() => {
+    dispatch(clearSavingPlan());
+  }, [currencyCode, dispatch]);
 
   // Minimum date: tomorrow
   const tomorrow = new Date();
@@ -66,6 +70,7 @@ const SavingPlanPage = () => {
     const payload = {
       targetAmount: amountNum,
       targetDate,
+      currency: currencyCode,
     };
 
     const result = await dispatch(generateSavingPlan(payload));
@@ -82,10 +87,11 @@ const SavingPlanPage = () => {
 
     const result = await dispatch(
       createSavingsGoal({
-        title: `Goal: Save ${currencySymbol}${savingPlan.targetAmount}`,
+        title: `Goal: Save ${formatCurrency(savingPlan.targetAmount, currencyCode)}`,
         targetAmount: Number(savingPlan.targetAmount || 0),
         targetDate: savingPlan.targetDate,
-        description: `Plan feasibility: ${savingPlan.feasibility?.status}. Required: ${currencySymbol}${Number(savingPlan.requiredSavings?.monthly || 0).toFixed(0)}/mo`,
+        currency: currencyCode,
+        description: `Plan feasibility: ${savingPlan.feasibility?.status}. Required: ${formatCurrency(Number(savingPlan.requiredSavings?.monthly || 0), currencyCode)}/mo`,
       })
     );
     setGoalCreatedLoading(false);
@@ -239,7 +245,7 @@ const SavingPlanPage = () => {
                 <FiClock className="text-warning-400" />
               </div>
               <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                {currencySymbol}{Number(savingPlan.requiredSavings?.daily || 0).toFixed(2)}
+                {formatCurrency(Number(savingPlan.requiredSavings?.daily || 0), currencyCode)}
               </p>
               <span className="text-xs text-dark-400 mt-1 block">
                 Required per day for {savingPlan.daysRemaining || 0} days
@@ -252,7 +258,7 @@ const SavingPlanPage = () => {
                 <FiCalendar className="text-info-400" />
               </div>
               <p className="text-2xl sm:text-3xl font-bold text-info-400 tracking-tight">
-                {currencySymbol}{Number(savingPlan.requiredSavings?.weekly || 0).toFixed(2)}
+                {formatCurrency(Number(savingPlan.requiredSavings?.weekly || 0), currencyCode)}
               </p>
               <span className="text-xs text-dark-400 mt-1 block">
                 Required per week for {savingPlan.weeksRemaining || 0} weeks
@@ -265,7 +271,7 @@ const SavingPlanPage = () => {
                 <FiTrendingUp className="text-income-400" />
               </div>
               <p className="text-2xl sm:text-3xl font-bold text-income-400 tracking-tight">
-                {currencySymbol}{Number(savingPlan.requiredSavings?.monthly || 0).toFixed(2)}
+                {formatCurrency(Number(savingPlan.requiredSavings?.monthly || 0), currencyCode)}
               </p>
               <span className="text-xs text-dark-400 mt-1 block">
                 Required per month (~{savingPlan.monthsRemaining} months)
@@ -305,14 +311,14 @@ const SavingPlanPage = () => {
                       <div className="text-right">
                         <span className="text-dark-400 block">Current Spend</span>
                         <span className="font-semibold text-dark-200">
-                          {currencySymbol}{tip.currentMonthlySpend?.toFixed(0)}/mo
+                          {formatCurrency(tip.currentMonthlySpend || 0, currencyCode)}/mo
                         </span>
                       </div>
                       <FiArrowRight className="text-dark-500 hidden sm:block" />
                       <div className="text-right">
                         <span className="text-income-400 block font-semibold">Monthly Savings</span>
                         <span className="text-sm font-bold text-income-400">
-                          +{currencySymbol}{tip.suggestedMonthlyCut?.toFixed(0)}/mo
+                          +{formatCurrency(tip.suggestedMonthlyCut || 0, currencyCode)}/mo
                         </span>
                       </div>
                     </div>

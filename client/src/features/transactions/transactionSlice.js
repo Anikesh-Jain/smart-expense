@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axios';
+import { updateProfile } from '../auth/authSlice';
 
 // Fetch paginated & filtered transactions
 export const fetchTransactions = createAsyncThunk(
@@ -177,6 +178,12 @@ const transactionSlice = createSlice({
       .addCase(deleteTransaction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // Clear stale transactions on display currency change
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        if (action.payload?.currency) {
+          state.transactions = [];
+        }
       });
   },
 });

@@ -65,7 +65,7 @@ const SavingsPage = () => {
   const [deletingGoalId, setDeletingGoalId] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchSavingsGoals());
+    dispatch(fetchSavingsGoals({ displayCurrency: currencyCode }));
   }, [dispatch, currencyCode]);
 
   // Open Create modal
@@ -303,7 +303,6 @@ const SavingsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredGoals.map((goal) => {
             const goalCur = goal.currency || 'INR';
-            const goalSym = getCurrencySymbol(goalCur);
             const targetAmount = Number(goal.targetAmount) || 1;
             const currentAmount = Number(goal.currentAmount) || 0;
             const isCompleted = goal.status === 'completed' || currentAmount >= targetAmount;
@@ -387,7 +386,7 @@ const SavingsPage = () => {
                             <FiClock /> Days Left:
                           </span>
                           <span className="text-warning-400 font-medium">
-                            {daysRemaining} days (~{goalSym}{requiredMonthly.toFixed(0)}/mo)
+                            {daysRemaining} days (~{formatCurrency(requiredMonthly, goalCur)}/mo)
                           </span>
                         </div>
                       )}

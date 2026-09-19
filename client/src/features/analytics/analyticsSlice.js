@@ -1,12 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axios';
+import { updateProfile } from '../auth/authSlice';
 
 // Monthly trends
 export const fetchMonthlyTrends = createAsyncThunk(
   'analytics/fetchMonthlyTrends',
-  async (months = 6, { rejectWithValue }) => {
+  async (params = 6, { rejectWithValue }) => {
     try {
-      const response = await API.get('/analytics/monthly', { params: { months } });
+      const queryParams = typeof params === 'number'
+        ? { months: params }
+        : { months: 6, ...params };
+      const response = await API.get('/analytics/monthly', { params: queryParams });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch monthly trends');
@@ -30,9 +34,9 @@ export const fetchCategoryBreakdown = createAsyncThunk(
 // Spending pace
 export const fetchSpendingPace = createAsyncThunk(
   'analytics/fetchSpendingPace',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/analytics/spending-pace');
+      const response = await API.get('/analytics/spending-pace', { params });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch spending pace');
@@ -43,9 +47,9 @@ export const fetchSpendingPace = createAsyncThunk(
 // Will my money last
 export const fetchWillMoneyLast = createAsyncThunk(
   'analytics/fetchWillMoneyLast',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/analytics/money-last');
+      const response = await API.get('/analytics/money-last', { params });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch money projection');
@@ -56,9 +60,9 @@ export const fetchWillMoneyLast = createAsyncThunk(
 // Financial health score
 export const fetchFinancialHealth = createAsyncThunk(
   'analytics/fetchFinancialHealth',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/analytics/financial-health');
+      const response = await API.get('/analytics/financial-health', { params });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch financial health score');
@@ -69,9 +73,9 @@ export const fetchFinancialHealth = createAsyncThunk(
 // Smart suggestions
 export const fetchSmartSuggestions = createAsyncThunk(
   'analytics/fetchSmartSuggestions',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/analytics/suggestions');
+      const response = await API.get('/analytics/suggestions', { params });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch smart suggestions');
@@ -114,6 +118,15 @@ const analyticsSlice = createSlice({
     clearSavingPlan: (state) => {
       state.savingPlan = null;
     },
+    clearAnalyticsData: (state) => {
+      state.monthlyTrends = [];
+      state.categoryBreakdown = null;
+      state.spendingPace = null;
+      state.willMoneyLast = null;
+      state.financialHealth = null;
+      state.suggestions = [];
+      state.savingPlan = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -153,9 +166,21 @@ const analyticsSlice = createSlice({
       .addCase(generateSavingPlan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // Invalidate and reset stale analytics data when display currency is updated
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        if (action.payload?.currency) {
+          state.monthlyTrends = [];
+          state.categoryBreakdown = null;
+          state.spendingPace = null;
+          state.willMoneyLast = null;
+          state.financialHealth = null;
+          state.suggestions = [];
+          state.savingPlan = null;
+        }
       });
   },
 });
 
-export const { clearError, clearSavingPlan } = analyticsSlice.actions;
+export const { clearError, clearSavingPlan, clearAnalyticsData } = analyticsSlice.actions;
 export default analyticsSlice.reducer;

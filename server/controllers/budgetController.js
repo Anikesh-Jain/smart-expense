@@ -53,9 +53,24 @@ function decorateBudgetWithDisplay(budget, displayCurrency, rates) {
     );
   }
 
+  const categoryBudgets = (bObj.categoryBudgets || []).map(cb => {
+    const origAmount = Number(cb.amount) || 0;
+    const displayAmount = bCur === targetCur
+      ? origAmount
+      : roundCurrency(convertCurrency(origAmount, bCur, targetCur, rates), targetCur);
+    return {
+      category: cb.category,
+      amount: origAmount,
+      displayAmount,
+      currency: bCur,
+      displayCurrency: targetCur
+    };
+  });
+
   return {
     ...bObj,
     displayTotalBudget,
+    categoryBudgets,
     displayCurrency: targetCur
   };
 }
