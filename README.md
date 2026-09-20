@@ -2,6 +2,12 @@
 
 > Full-stack personal finance platform for expense tracking, budgeting, savings planning, analytics, and multi-currency financial management.
 
+## 🌐 Live Demo & Repository
+
+- **Live Website:** https://smart-expense-blond.vercel.app
+- **GitHub Repository:** https://github.com/Anikesh-Jain/smart-expense
+- **Developer Portfolio:** https://anikesh-portfolio-seven.vercel.app/
+
 ## Overview
 
 **Smart Expense** is a full-stack personal finance web application for tracking expenses, managing budgets, planning savings goals, and analyzing financial activity across multiple currencies.
@@ -89,7 +95,7 @@ Supports active filters/search, RFC 4180 CSV escaping, empty results, and does n
 
 ## Tech Stack
 
-**Frontend**
+### Frontend
 - React 19
 - Vite
 - Tailwind CSS
@@ -99,24 +105,24 @@ Supports active filters/search, RFC 4180 CSV escaping, empty results, and does n
 - Axios
 - oxlint
 
-**Backend**
+### Backend
 - Node.js
 - Express.js
 - MongoDB Atlas
 - Mongoose
 
-**Authentication & Security**
+### Authentication & Security
 - JWT
 - bcrypt
 - Helmet
 - express-rate-limit
 - CORS
 
-**Email**
+### Email
 - Nodemailer
 - Brevo SMTP
 
-**Testing**
+### Testing
 - Node.js built-in test runner
 
 ## Project Structure
@@ -263,6 +269,17 @@ Built with React, Node.js, Express, MongoDB, and a focus on practical financial 
 
 ---
 
-## 🌐 Live Demo
+## 👨‍💻 Author
 
-**SmartExpense:** https://smart-expense-blond.vercel.app
+**Anikesh Jain**  
+B.Tech CSE Student — Acropolis Institute of Technology and Research (AITR), Indore
+
+- Portfolio: https://anikesh-portfolio-seven.vercel.app/
+- GitHub: https://github.com/Anikesh-Jain
+- LinkedIn: https://www.linkedin.com/in/anikeshjain/
+
+---
+
+## 📄 License
+
+Personal portfolio and project work. Do not reuse personal information, screenshots, or project assets without permission.
