@@ -145,14 +145,14 @@ const SpendingPacePage = () => {
       </div>
 
       {/* 5 Core Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {/* Safe Daily Limit */}
         <Card>
           <div className="flex items-center justify-between text-dark-400 mb-1">
             <span className="text-xs font-semibold uppercase tracking-wider">Safe Daily Limit</span>
             <FiClock className="text-warning-400" />
           </div>
-          <p className="text-2xl font-bold text-warning-400 tracking-tight">
+          <p className="text-2xl font-bold text-warning-400 tracking-tight truncate">
             {formatCurrency(safeDaily, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">For next {daysRemaining} days</span>
@@ -164,7 +164,7 @@ const SpendingPacePage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Safe Weekly Limit</span>
             <FiCalendar className="text-info-400" />
           </div>
-          <p className="text-2xl font-bold text-white tracking-tight">
+          <p className="text-2xl font-bold text-white tracking-tight truncate">
             {formatCurrency(safeWeekly, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">Recommended weekly cap</span>
@@ -176,7 +176,7 @@ const SpendingPacePage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Current Burn Rate</span>
             <FiTrendingDown className="text-expense-400" />
           </div>
-          <p className="text-2xl font-bold text-expense-400 tracking-tight">
+          <p className="text-2xl font-bold text-expense-400 tracking-tight truncate">
             {formatCurrency(avgDaily, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">Avg spend/day so far</span>
@@ -188,7 +188,7 @@ const SpendingPacePage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Projected Spend</span>
             <FiCompass className="text-dark-300" />
           </div>
-          <p className="text-2xl font-bold text-white tracking-tight">
+          <p className="text-2xl font-bold text-white tracking-tight truncate">
             {formatCurrency(projectedSpend, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">Month-end projection</span>
@@ -202,7 +202,7 @@ const SpendingPacePage = () => {
               {projectedBalance >= 0 ? 'Surplus' : 'Deficit'}
             </Badge>
           </div>
-          <p className={`text-2xl font-bold tracking-tight ${projectedBalance < 0 ? 'text-expense-400' : 'text-income-400'}`}>
+          <p className={`text-2xl font-bold tracking-tight truncate ${projectedBalance < 0 ? 'text-expense-400' : 'text-income-400'}`}>
             {formatCurrency(projectedBalance, currencyCode)}
           </p>
           <span className="text-[11px] text-dark-400 mt-1 block">On last day of month</span>

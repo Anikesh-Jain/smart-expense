@@ -140,7 +140,7 @@ const DashboardPage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Available Balance</span>
             <Badge variant={currentBalance >= 0 ? 'info' : 'danger'}>Real-Time</Badge>
           </div>
-          <p className={`text-2xl sm:text-3xl font-bold tracking-tight ${currentBalance < 0 ? 'text-expense-400' : 'text-white'}`}>
+          <p className={`text-2xl sm:text-3xl font-bold tracking-tight truncate ${currentBalance < 0 ? 'text-expense-400' : 'text-white'}`}>
             {formatCurrency(currentBalance, currencyCode)}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-xs text-dark-400">

@@ -244,7 +244,7 @@ const SavingPlanPage = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider">Daily Target</span>
                 <FiClock className="text-warning-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight truncate">
                 {formatCurrency(Number(savingPlan.requiredSavings?.daily || 0), currencyCode)}
               </p>
               <span className="text-xs text-dark-400 mt-1 block">
@@ -257,7 +257,7 @@ const SavingPlanPage = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider">Weekly Target</span>
                 <FiCalendar className="text-info-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-info-400 tracking-tight">
+              <p className="text-2xl sm:text-3xl font-bold text-info-400 tracking-tight truncate">
                 {formatCurrency(Number(savingPlan.requiredSavings?.weekly || 0), currencyCode)}
               </p>
               <span className="text-xs text-dark-400 mt-1 block">
@@ -270,7 +270,7 @@ const SavingPlanPage = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider">Monthly Target</span>
                 <FiTrendingUp className="text-income-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-income-400 tracking-tight">
+              <p className="text-2xl sm:text-3xl font-bold text-income-400 tracking-tight truncate">
                 {formatCurrency(Number(savingPlan.requiredSavings?.monthly || 0), currencyCode)}
               </p>
               <span className="text-xs text-dark-400 mt-1 block">

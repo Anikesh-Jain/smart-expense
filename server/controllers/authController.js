@@ -305,6 +305,10 @@ const forgotPassword = async (req, res, next) => {
     } catch (emailError) {
       // Log generic failure without leaking credentials or raw token
       console.error('Password reset email dispatch error:', emailError.message);
+      // Invalidate the stored token since the email never reached the user
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
     }
 
     // Never expose the token in API response, do not log raw token/password

@@ -214,7 +214,7 @@ const SavingsPage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Total Saved Across Goals</span>
             <FiTrendingUp className="text-income-400" />
           </div>
-          <p className="text-2xl font-bold text-income-400 tracking-tight">
+          <p className="text-2xl font-bold text-income-400 tracking-tight truncate">
             {formatCurrency(totalSavedAllGoals, currencyCode, currencyCode !== 'JPY')}
           </p>
         </Card>

@@ -318,13 +318,13 @@ const TransactionsPage = () => {
 
             {/* Date range filters + reset buttons */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-dark-750/50">
-              <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="flex flex-wrap items-center gap-2 text-xs w-full sm:w-auto">
                 <span className="text-dark-400 flex items-center gap-1">
                   <FiCalendar /> Date Range:
                 </span>
                 <input
                   type="date"
-                  className="input py-1 px-2 text-xs w-36 bg-dark-900 border-dark-750"
+                  className="input py-1 px-2 text-xs w-full sm:w-36 bg-dark-900 border-dark-750"
                   value={startDate}
                   onChange={(e) => {
                     setStartDate(e.target.value);
@@ -335,7 +335,7 @@ const TransactionsPage = () => {
                 <span className="text-dark-400">to</span>
                 <input
                   type="date"
-                  className="input py-1 px-2 text-xs w-36 bg-dark-900 border-dark-750"
+                  className="input py-1 px-2 text-xs w-full sm:w-36 bg-dark-900 border-dark-750"
                   value={endDate}
                   onChange={(e) => {
                     setEndDate(e.target.value);
@@ -518,7 +518,7 @@ const TransactionsPage = () => {
 
           {/* Pagination Controls */}
           {pagination && pagination.totalPages > 1 && (
-            <div className="p-4 border-t border-dark-750/70 flex items-center justify-between">
+            <div className="p-4 border-t border-dark-750/70 flex flex-col sm:flex-row items-center justify-between gap-3">
               <span className="text-xs text-dark-400">
                 Showing {transactions.length} of {pagination.totalCount} items
               </span>

@@ -212,7 +212,7 @@ const BudgetsPage = () => {
         </div>
 
         {/* Month Selector Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center bg-dark-850 border border-dark-750 rounded-xl p-1">
             <button
               type="button"
@@ -481,7 +481,7 @@ const BudgetsPage = () => {
                     <span>{cat.icon || '🏷️'}</span>
                     <span>{cat.name}</span>
                   </span>
-                  <div className="w-36">
+                  <div className="w-28 sm:w-36 shrink-0">
                     <input
                       type="number"
                       min="0"

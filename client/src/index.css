@@ -9,6 +9,14 @@
   /* Global base styles */
   body {
     @apply bg-dark-950 text-dark-100 font-sans antialiased;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Mobile horizontal overflow containment */
+  html, body {
+    overflow-x: clip;
+    max-width: 100%;
   }
 
   /* Custom scrollbar for dark theme */
@@ -455,4 +463,15 @@ html.light .recharts-cartesian-grid line {
 
 html.light .recharts-text {
   fill: #475569 !important;
+}
+
+/* ==========================================================================
+   Utility: Hide scrollbar (used by horizontal tab bars)
+   ========================================================================== */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -124,7 +124,7 @@ const AnalyticsPage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Total Inflow</span>
             <Badge variant="success">Income</Badge>
           </div>
-          <p className="text-2xl font-bold text-income-400 tracking-tight">
+          <p className="text-2xl font-bold text-income-400 tracking-tight truncate">
             +{formatCurrency(totalPeriodIncome, currencyCode)}
           </p>
           <span className="text-xs text-dark-400 mt-1 block">In last {monthsRange} months</span>
@@ -135,7 +135,7 @@ const AnalyticsPage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Total Outflow</span>
             <Badge variant="danger">Expense</Badge>
           </div>
-          <p className="text-2xl font-bold text-expense-400 tracking-tight">
+          <p className="text-2xl font-bold text-expense-400 tracking-tight truncate">
             -{formatCurrency(totalPeriodExpenses, currencyCode)}
           </p>
           <span className="text-xs text-dark-400 mt-1 block">In last {monthsRange} months</span>
@@ -148,7 +148,7 @@ const AnalyticsPage = () => {
               {netSavingsPeriod >= 0 ? 'Surplus' : 'Deficit'}
             </Badge>
           </div>
-          <p className={`text-2xl font-bold tracking-tight ${netSavingsPeriod < 0 ? 'text-expense-400' : 'text-white'}`}>
+          <p className={`text-2xl font-bold tracking-tight truncate ${netSavingsPeriod < 0 ? 'text-expense-400' : 'text-white'}`}>
             {netSavingsPeriod < 0 ? '-' : '+'}{formatCurrency(Math.abs(netSavingsPeriod), currencyCode)}
           </p>
           <span className="text-xs text-dark-400 mt-1 block">Inflow minus outflow</span>

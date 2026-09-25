@@ -60,6 +60,8 @@ const setCustomTransporter = (transporter) => {
 
 /**
  * Creates or retrieves the Nodemailer transporter.
+ * Includes explicit connection/socket timeouts to prevent the forgot-password
+ * flow from hanging indefinitely when the SMTP server is slow or unreachable.
  */
 const getTransporter = () => {
   if (customTransporter) {
@@ -76,7 +78,10 @@ const getTransporter = () => {
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD
-    }
+    },
+    connectionTimeout: 10000, // 10s to establish TCP connection
+    greetTimeout: 10000,      // 10s for SMTP greeting
+    socketTimeout: 10000,     // 10s of inactivity before timeout
   });
 };
 
@@ -203,7 +208,14 @@ The Expense Tracker Team
     html: htmlContent
   };
 
-  const info = await transporter.sendMail(mailOptions);
+  // Defence-in-depth: cap total send time at 15s even if transport timeouts don't fire
+  const SEND_TIMEOUT_MS = 15000;
+  const sendPromise = transporter.sendMail(mailOptions);
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Email send timed out after 15 seconds')), SEND_TIMEOUT_MS)
+  );
+
+  const info = await Promise.race([sendPromise, timeoutPromise]);
   return {
     success: true,
     messageId: info.messageId
