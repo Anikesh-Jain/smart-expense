@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchDashboardOverview } from '../../features/dashboard/dashboardSlice';
@@ -76,12 +76,16 @@ const DashboardPage = () => {
   const healthRating = financialHealth?.rating ?? (healthScore >= 80 ? 'EXCELLENT' : healthScore >= 60 ? 'GOOD' : healthScore >= 40 ? 'FAIR' : 'NEEDS ATTENTION');
   const healthVariant = healthScore >= 80 ? 'success' : healthScore >= 60 ? 'info' : healthScore >= 40 ? 'warning' : 'danger';
 
-  // Format Recharts data
-  const chartData = (monthlyTrends || []).map((item) => ({
-    name: item.label || `${item.month}/${item.year}`,
-    Income: item.income,
-    Expenses: item.expenses,
-  }));
+  // Format Recharts data (memoized to avoid recalculating on unrelated state changes)
+  const chartData = useMemo(
+    () =>
+      (monthlyTrends || []).map((item) => ({
+        name: item.label || `${item.month}/${item.year}`,
+        Income: item.income,
+        Expenses: item.expenses,
+      })),
+    [monthlyTrends]
+  );
 
   if (overviewLoading && !overview) {
     return (

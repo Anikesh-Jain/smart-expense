@@ -31,14 +31,14 @@ const AccountTab = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  // Profile Form State
-  const [profileData, setProfileData] = useState({
+  // Profile Form State (initialized accurately to prevent initial mount re-render)
+  const [profileData, setProfileData] = useState(() => ({
     name: user?.name || '',
-    monthlyIncome: user?.monthlyIncome ?? '',
-    fixedExpenses: user?.fixedExpenses ?? '',
-    savingsTarget: user?.savingsTarget ?? '',
+    monthlyIncome: user?.displayMonthlyIncome !== undefined ? user.displayMonthlyIncome : (user?.monthlyIncome ?? ''),
+    fixedExpenses: user?.displayFixedExpenses !== undefined ? user.displayFixedExpenses : (user?.fixedExpenses ?? ''),
+    savingsTarget: user?.displaySavingsTarget !== undefined ? user.displaySavingsTarget : (user?.savingsTarget ?? ''),
     incomeDay: user?.incomeDay ?? 1,
-  });
+  }));
 
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const activeCurrencySymbol = getCurrencySymbol(user?.currency || 'INR');
@@ -56,8 +56,11 @@ const AccountTab = () => {
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
+  // Only synchronize when user object actually changes after mount
+  const prevUserIdRef = React.useRef(user?._id);
   useEffect(() => {
-    if (user) {
+    if (user && user._id !== prevUserIdRef.current) {
+      prevUserIdRef.current = user._id;
       setProfileData({
         name: user.name || '',
         monthlyIncome: user.displayMonthlyIncome !== undefined ? user.displayMonthlyIncome : (user.monthlyIncome ?? ''),

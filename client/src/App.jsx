@@ -14,15 +14,15 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 import AppLayout from './components/layout/AppLayout';
 
-// Core Immediate Pages
+// Core Immediate Auth Pages
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import OnboardingPage from './pages/auth/OnboardingPage';
-import DashboardPage from './pages/dashboard/DashboardPage';
-import TransactionsPage from './pages/transactions/TransactionsPage';
-import AddTransactionPage from './pages/transactions/AddTransactionPage';
 
-// Performance: Lazy-Loaded Sub-Modules
+// Performance: Lazy-Loaded Sub-Modules & Authenticated Pages
+const OnboardingPage = lazy(() => import('./pages/auth/OnboardingPage'));
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
+const TransactionsPage = lazy(() => import('./pages/transactions/TransactionsPage'));
+const AddTransactionPage = lazy(() => import('./pages/transactions/AddTransactionPage'));
 const BudgetsPage = lazy(() => import('./pages/budgets/BudgetsPage'));
 const SavingsPage = lazy(() => import('./pages/savings/SavingsPage'));
 const AnalyticsPage = lazy(() => import('./pages/analytics/AnalyticsPage'));

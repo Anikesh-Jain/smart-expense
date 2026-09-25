@@ -50,12 +50,22 @@ const TransactionsPage = () => {
 
   // Local filter states
   const [searchInput, setSearchInput] = useState(filters.search || '');
+  const [debouncedSearch, setDebouncedSearch] = useState(filters.search || '');
   const [selectedType, setSelectedType] = useState(filters.type || '');
   const [selectedCategory, setSelectedCategory] = useState(filters.category || '');
   const [startDate, setStartDate] = useState(filters.startDate || '');
   const [endDate, setEndDate] = useState(filters.endDate || '');
   const [sortBy, setSortBy] = useState(filters.sort || '-date');
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Debounce search input by 350ms to prevent duplicate concurrent API requests on each keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput);
+      setCurrentPage(1);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   // Edit modal state
   const [editingTx, setEditingTx] = useState(null);
@@ -82,12 +92,12 @@ const TransactionsPage = () => {
     };
     if (selectedType) params.type = selectedType;
     if (selectedCategory) params.category = selectedCategory;
-    if (searchInput.trim()) params.search = searchInput.trim();
+    if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
     if (startDate) params.startDate = startDate;
     if (endDate) params.endDate = endDate;
 
     dispatch(fetchTransactions(params));
-  }, [dispatch, currentPage, sortBy, selectedType, selectedCategory, searchInput, startDate, endDate, currencyCode]);
+  }, [dispatch, currentPage, sortBy, selectedType, selectedCategory, debouncedSearch, startDate, endDate, currencyCode]);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -100,13 +110,14 @@ const TransactionsPage = () => {
   // Handle Search submit
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    setDebouncedSearch(searchInput);
     setCurrentPage(1);
-    loadData();
   };
 
   // Reset all filters
   const handleResetFilters = () => {
     setSearchInput('');
+    setDebouncedSearch('');
     setSelectedType('');
     setSelectedCategory('');
     setStartDate('');

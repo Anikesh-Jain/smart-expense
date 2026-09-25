@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMonthlyTrends, fetchCategoryBreakdown } from '../../features/analytics/analyticsSlice';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
@@ -62,19 +62,26 @@ const AnalyticsPage = () => {
   const hasMonthlyData = monthlyTrends && monthlyTrends.length > 0 && monthlyTrends.some((d) => d.income > 0 || d.expenses > 0);
   const hasCategoryData = categoryBreakdown?.categories && categoryBreakdown.categories.length > 0;
 
-  // Compute summary totals for selected range
-  const totalPeriodIncome = (monthlyTrends || []).reduce((sum, d) => sum + (d.income || 0), 0);
-  const totalPeriodExpenses = (monthlyTrends || []).reduce((sum, d) => sum + (d.expenses || 0), 0);
-  const netSavingsPeriod = totalPeriodIncome - totalPeriodExpenses;
-  const savingsRate = totalPeriodIncome > 0 ? Math.round((netSavingsPeriod / totalPeriodIncome) * 100) : 0;
+  // Compute summary totals for selected range (memoized)
+  const { totalPeriodIncome, totalPeriodExpenses, netSavingsPeriod, savingsRate } = useMemo(() => {
+    const income = (monthlyTrends || []).reduce((sum, d) => sum + (d.income || 0), 0);
+    const expenses = (monthlyTrends || []).reduce((sum, d) => sum + (d.expenses || 0), 0);
+    const net = income - expenses;
+    const rate = income > 0 ? Math.round((net / income) * 100) : 0;
+    return { totalPeriodIncome: income, totalPeriodExpenses: expenses, netSavingsPeriod: net, savingsRate: rate };
+  }, [monthlyTrends]);
 
-  // Prepare PieChart data
-  const pieData = (categoryBreakdown?.categories || []).map((cat) => ({
-    name: cat.category,
-    value: cat.total,
-    percentage: cat.percentage,
-    count: cat.count,
-  }));
+  // Prepare PieChart data (memoized)
+  const pieData = useMemo(
+    () =>
+      (categoryBreakdown?.categories || []).map((cat) => ({
+        name: cat.category,
+        value: cat.total,
+        percentage: cat.percentage,
+        count: cat.count,
+      })),
+    [categoryBreakdown?.categories]
+  );
 
   return (
     <div className="space-y-6">
