@@ -8,6 +8,7 @@ import { getMe } from './features/auth/authSlice';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import NetworkStatusBanner from './components/common/NetworkStatusBanner';
 import RouteLoadingFallback from './components/common/RouteLoadingFallback';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Auth Guard & Layout
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -49,6 +50,7 @@ function App() {
     <ErrorBoundary>
       <NetworkStatusBanner />
       <Router>
+        <ScrollToTop />
         <Toaster
           position="top-right"
           toastOptions={{
