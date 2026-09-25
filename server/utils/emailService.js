@@ -23,10 +23,13 @@ const getEmailDiagnostic = () => {
   if (!process.env.SMTP_USER) missing.push('SMTP_USER');
   if (!process.env.SMTP_PASSWORD) missing.push('SMTP_PASSWORD');
 
+  const rawPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 2525;
+  const port = rawPort === 587 ? 2525 : rawPort;
+
   return {
     configured,
     host: process.env.SMTP_HOST || null,
-    port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
+    port,
     from: process.env.SMTP_FROM || 'Expense Tracker <noreply@expensetracker.com>',
     missingFields: missing
   };
@@ -68,7 +71,8 @@ const getTransporter = () => {
     return customTransporter;
   }
 
-  const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
+  const rawPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 2525;
+  const port = rawPort === 587 ? 2525 : rawPort;
   const isSecure = port === 465;
 
   return nodemailer.createTransport({
