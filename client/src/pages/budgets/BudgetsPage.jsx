@@ -203,8 +203,8 @@ const BudgetsPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header & Month Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Monthly Budgets</h2>
           <p className="text-xs sm:text-sm text-dark-400 mt-1">
             Set spending limits per category to keep your hostel and student expenses controlled.
@@ -212,8 +212,8 @@ const BudgetsPage = () => {
         </div>
 
         {/* Month Selector Controls */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center bg-dark-850 border border-dark-750 rounded-xl p-1">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center justify-between sm:justify-start bg-dark-850 border border-dark-750 rounded-xl p-1 flex-1 sm:flex-none">
             <button
               type="button"
               onClick={handlePrevMonth}
@@ -222,7 +222,7 @@ const BudgetsPage = () => {
             >
               <FiChevronLeft className="text-base" />
             </button>
-            <span className="px-3 text-xs sm:text-sm font-semibold text-white whitespace-nowrap">
+            <span className="px-2.5 sm:px-3 text-xs sm:text-sm font-semibold text-white whitespace-nowrap">
               {monthNames[selectedMonth - 1]} {selectedYear}
             </span>
             <button
@@ -235,20 +235,22 @@ const BudgetsPage = () => {
             </button>
           </div>
 
-          {(selectedMonth !== today.getMonth() + 1 || selectedYear !== today.getFullYear()) && (
-            <Button variant="ghost" size="sm" onClick={handleCurrentMonth}>
-              Today
-            </Button>
-          )}
+          <div className="flex items-center gap-2 shrink-0">
+            {(selectedMonth !== today.getMonth() + 1 || selectedYear !== today.getFullYear()) && (
+              <Button variant="ghost" size="sm" onClick={handleCurrentMonth}>
+                Today
+              </Button>
+            )}
 
-          <Button
-            variant="primary"
-            size="sm"
-            icon={activeBudget ? FiEdit2 : FiPlus}
-            onClick={handleOpenModal}
-          >
-            {activeBudget ? 'Edit Budget' : 'Set Budget'}
-          </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={activeBudget ? FiEdit2 : FiPlus}
+              onClick={handleOpenModal}
+            >
+              {activeBudget ? 'Edit Budget' : 'Set Budget'}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -258,7 +260,7 @@ const BudgetsPage = () => {
         </div>
       ) : !activeBudget ? (
         <Card>
-          <CardContent className="p-8">
+          <CardContent className="p-6 sm:p-8">
             <EmptyState
               icon={FiPieChart}
               title={`No Budget Set for ${monthNames[selectedMonth - 1]} ${selectedYear}`}
@@ -276,13 +278,13 @@ const BudgetsPage = () => {
           {/* Overall Budget Overview Card */}
           <Card>
             <CardHeader>
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle>Overall Monthly Allocation</CardTitle>
                 <CardDescription>
                   {monthNames[selectedMonth - 1]} {selectedYear} • Actual spent vs monthly ceiling
                 </CardDescription>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
                 <Badge
                   variant={
                     overallPercentage > 100 ? 'danger' : overallPercentage > 80 ? 'warning' : 'success'
@@ -305,27 +307,27 @@ const BudgetsPage = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-xl bg-dark-900 border border-dark-750">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+                <div className="p-3.5 sm:p-4 rounded-xl bg-dark-900 border border-dark-750">
                   <span className="text-xs text-dark-400 font-medium">Total Monthly Budget</span>
-                  <p className="text-xl sm:text-2xl font-bold text-white mt-1">
+                  <p className="text-xl sm:text-2xl font-bold text-white mt-1 break-words">
                     {budgetDisplay.primaryText}
                   </p>
                   {budgetDisplay.secondaryText && (
-                    <span className="block text-xs text-dark-400 mt-0.5">
+                    <span className="block text-xs text-dark-400 mt-0.5 break-words">
                       {budgetDisplay.secondaryText}
                     </span>
                   )}
                 </div>
-                <div className="p-4 rounded-xl bg-dark-900 border border-dark-750">
+                <div className="p-3.5 sm:p-4 rounded-xl bg-dark-900 border border-dark-750">
                   <span className="text-xs text-dark-400 font-medium">Total Spent So Far</span>
-                  <p className="text-xl sm:text-2xl font-bold text-expense-400 mt-1">
+                  <p className="text-xl sm:text-2xl font-bold text-expense-400 mt-1 break-words">
                     {formatCurrency(totalSpent, currencyCode)}
                   </p>
                 </div>
-                <div className="p-4 rounded-xl bg-dark-900 border border-dark-750">
+                <div className="p-3.5 sm:p-4 rounded-xl bg-dark-900 border border-dark-750">
                   <span className="text-xs text-dark-400 font-medium">Remaining Budget</span>
-                  <p className={`text-xl sm:text-2xl font-bold mt-1 ${remainingBudget < 0 ? 'text-expense-400' : 'text-income-400'}`}>
+                  <p className={`text-xl sm:text-2xl font-bold mt-1 break-words ${remainingBudget < 0 ? 'text-expense-400' : 'text-income-400'}`}>
                     {formatCurrency(remainingBudget, currencyCode)}
                   </p>
                 </div>
@@ -351,7 +353,7 @@ const BudgetsPage = () => {
 
           {/* Category Budgets Grid */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-1">
               <h3 className="text-base font-semibold text-white">Category Allocations</h3>
               <span className="text-xs text-dark-400">
                 {(activeBudget.categoryBudgets || []).length} categories with specific limits
@@ -369,15 +371,15 @@ const BudgetsPage = () => {
                   const isCaution = pct >= 80 && !isOver;
 
                   return (
-                    <Card key={cb.category} className="p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-white text-sm">{cb.category}</span>
+                    <Card key={cb.category} className="p-3.5 sm:p-4 space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold text-white text-sm truncate">{cb.category}</span>
                         <Badge variant={isOver ? 'danger' : isCaution ? 'warning' : 'success'} size="sm">
                           {isOver ? 'Over Budget' : isCaution ? 'Caution' : 'Good'}
                         </Badge>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
                         <span className="text-dark-400">
                           Spent: <strong className="text-white">{formatCurrency(spent, currencyCode)}</strong>
                         </span>

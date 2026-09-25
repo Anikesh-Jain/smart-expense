@@ -80,18 +80,18 @@ const SpendingPacePage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Spending Pace Analysis</h2>
           <p className="text-xs sm:text-sm text-dark-400 mt-1">
             Monitor your daily burn rate so you don't overspend during early weeks and struggle before month-end.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" icon={FiRefreshCw} onClick={loadData}>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+          <Button variant="secondary" size="sm" icon={FiRefreshCw} onClick={loadData} className="flex-1 sm:flex-initial">
             Refresh Pace
           </Button>
-          <Button variant="primary" size="sm" icon={FiZap} onClick={() => navigate('/saving-plan')}>
+          <Button variant="primary" size="sm" icon={FiZap} onClick={() => navigate('/saving-plan')} className="flex-1 sm:flex-initial">
             Smart Saving Plan
           </Button>
         </div>
@@ -99,7 +99,7 @@ const SpendingPacePage = () => {
 
       {/* Pace Status Banner */}
       <div
-        className={`p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+        className={`p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 sm:gap-4 ${
           rawStatus === 'overspending'
             ? 'bg-expense-500/10 border-expense-500/30 text-expense-300'
             : rawStatus === 'caution'
@@ -107,7 +107,7 @@ const SpendingPacePage = () => {
             : 'bg-income-500/10 border-income-500/30 text-income-300'
         }`}
       >
-        <div className="flex items-start gap-3.5">
+        <div className="flex items-start gap-3 min-w-0 flex-1">
           <div
             className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-xl font-bold ${
               rawStatus === 'overspending'
@@ -125,18 +125,18 @@ const SpendingPacePage = () => {
               <FiCheckCircle />
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="font-bold text-white text-base">Pacing Status:</span>
               <Badge variant={paceVariant}>{paceStatusLabel}</Badge>
             </div>
-            <p className="text-xs sm:text-sm mt-1 text-dark-200">
+            <p className="text-xs sm:text-sm mt-1 text-dark-200 break-words">
               {spendingPace?.message || 'Your daily spending pace is being calculated against your current balance.'}
             </p>
           </div>
         </div>
 
-        <div className="text-right sm:shrink-0">
+        <div className="text-left sm:text-right shrink-0 pt-2 sm:pt-0 border-t border-dark-750/50 sm:border-0 w-full sm:w-auto">
           <span className="text-xs text-dark-400 block font-medium">Safe Daily Limit</span>
           <span className="text-xl font-extrabold text-white">
             {formatCurrency(safeDaily, currencyCode)}/day
@@ -145,7 +145,7 @@ const SpendingPacePage = () => {
       </div>
 
       {/* 5 Core Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 sm:gap-4">
         {/* Safe Daily Limit */}
         <Card>
           <div className="flex items-center justify-between text-dark-400 mb-1">

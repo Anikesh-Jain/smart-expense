@@ -31,9 +31,9 @@ const PrivacyTermsTab = () => {
               <div className="w-8 h-8 rounded-xl bg-info-500/10 border border-info-500/20 flex items-center justify-center text-info-400 shrink-0 mt-0.5">
                 <FiLock className="text-sm" />
               </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">Password Security with bcrypt</h4>
-                <p className="text-xs text-dark-400 mt-1">
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-bold text-white break-words">Password Security with bcrypt</h4>
+                <p className="text-xs text-dark-400 mt-1 break-words">
                   Your password is cryptographically hashed using bcrypt with 12 salt rounds before being stored in the database. Plaintext passwords are never logged, stored, or readable by anyone.
                 </p>
               </div>
@@ -43,9 +43,9 @@ const PrivacyTermsTab = () => {
               <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0 mt-0.5">
                 <FiDatabase className="text-sm" />
               </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">JWT Session & User Ownership Isolation</h4>
-                <p className="text-xs text-dark-400 mt-1">
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-bold text-white break-words">JWT Session & User Ownership Isolation</h4>
+                <p className="text-xs text-dark-400 mt-1 break-words">
                   Requests are authenticated via JSON Web Tokens (JWT). All transactions, budgets, categories, and goals are strictly isolated by your user ID in database queries. Users can only access their own records.
                 </p>
               </div>
@@ -55,9 +55,9 @@ const PrivacyTermsTab = () => {
               <div className="w-8 h-8 rounded-xl bg-income-500/10 border border-income-500/20 flex items-center justify-center text-income-400 shrink-0 mt-0.5">
                 <FiEyeOff className="text-sm" />
               </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">Zero Advertising Trackers & Zero Data Selling</h4>
-                <p className="text-xs text-dark-400 mt-1">
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-bold text-white break-words">Zero Advertising Trackers & Zero Data Selling</h4>
+                <p className="text-xs text-dark-400 mt-1 break-words">
                   SmartExpense does not embed third-party advertising trackers, marketing pixels, or analytics brokers. Your spending history and allowance figures are never sold or shared with third parties.
                 </p>
               </div>

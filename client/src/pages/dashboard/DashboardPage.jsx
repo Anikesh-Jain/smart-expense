@@ -111,11 +111,11 @@ const DashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-dark-900 border border-dark-800">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 rounded-3xl bg-dark-900 border border-dark-800">
+        <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="text-xl">👋</span>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight break-words">
               Welcome back, {user?.name || 'Student'}
             </h2>
           </div>
@@ -124,12 +124,13 @@ const DashboardPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
           <Button
             variant="primary"
             size="md"
             icon={FiPlus}
             onClick={() => navigate('/transactions/add')}
+            className="w-full sm:w-auto"
           >
             Add Transaction
           </Button>
@@ -333,9 +334,9 @@ const DashboardPage = () => {
                   return (
                     <div
                       key={tx._id}
-                      className="px-5 py-3.5 flex items-center justify-between hover:bg-dark-750/30 transition-colors"
+                      className="px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-dark-750/30 transition-colors"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                         <div
                           className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-semibold shrink-0 ${
                             isIncome
@@ -345,7 +346,7 @@ const DashboardPage = () => {
                         >
                           {isIncome ? <FiArrowUpRight /> : <FiArrowDownRight />}
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <p className="text-sm font-semibold text-white truncate">{tx.category}</p>
                           <p className="text-xs text-dark-400 truncate">
                             {tx.description || txDate} • {txDate}

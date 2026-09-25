@@ -30,10 +30,10 @@ const Badge = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-lg font-medium tracking-wide ${sizeStyles[size] || sizeStyles.md} ${variantStyles[variant] || variantStyles.neutral} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-lg font-medium tracking-wide whitespace-nowrap shrink-0 ${sizeStyles[size] || sizeStyles.md} ${variantStyles[variant] || variantStyles.neutral} ${className}`}
     >
       {dot && (
-        <span className={`w-1.5 h-1.5 rounded-full ${dotColors[variant] || dotColors.neutral}`} />
+        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColors[variant] || dotColors.neutral}`} />
       )}
       {children}
     </span>

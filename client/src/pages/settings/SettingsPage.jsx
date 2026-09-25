@@ -60,10 +60,10 @@ const SettingsPage = () => {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight break-words">
               Settings & Preferences
             </h2>
             <Badge variant="info">v1.0.0</Badge>
@@ -85,7 +85,7 @@ const SettingsPage = () => {
       </div>
 
       {/* Tabs Navigation Bar */}
-      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-dark-900/80 border border-dark-800 backdrop-blur-md overflow-x-auto no-scrollbar select-none">
+      <div className="flex items-center gap-1.5 p-1 sm:p-1.5 rounded-2xl bg-dark-900/80 border border-dark-800 backdrop-blur-md overflow-x-auto no-scrollbar select-none -mx-1 sm:mx-0 px-2 sm:px-1.5">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -95,7 +95,7 @@ const SettingsPage = () => {
               key={tab.id}
               type="button"
               onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 min-h-[36px] ${
                 isActive
                   ? 'bg-info-600 text-white shadow-md shadow-info-600/30'
                   : 'text-dark-300 hover:text-white hover:bg-dark-800/60'

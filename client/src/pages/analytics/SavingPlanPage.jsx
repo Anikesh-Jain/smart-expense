@@ -188,7 +188,7 @@ const SavingPlanPage = () => {
         <div className="space-y-6 animate-fade-in">
           {/* Feasibility Verdict Banner */}
           <div
-            className={`p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+            className={`p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
               feasibilityVariant === 'danger'
                 ? 'bg-expense-500/10 border-expense-500/30 text-expense-200'
                 : feasibilityVariant === 'warning'
@@ -196,7 +196,7 @@ const SavingPlanPage = () => {
                 : 'bg-income-500/10 border-income-500/30 text-income-200'
             }`}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
               <div
                 className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-xl font-bold ${
                   feasibilityVariant === 'danger'
@@ -214,12 +214,12 @@ const SavingPlanPage = () => {
                   <FiCheckCircle />
                 )}
               </div>
-              <div>
-                <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="font-bold text-white text-base">Feasibility Assessment:</span>
                   <Badge variant={feasibilityVariant}>{feasibility}</Badge>
                 </div>
-                <p className="text-xs sm:text-sm mt-1 text-dark-200 leading-relaxed">
+                <p className="text-xs sm:text-sm mt-1 text-dark-200 leading-relaxed break-words">
                   {savingPlan.feasibility?.note}
                 </p>
               </div>
@@ -231,7 +231,7 @@ const SavingPlanPage = () => {
               icon={FiTarget}
               loading={goalCreatedLoading}
               onClick={handleCreateAsGoal}
-              className="sm:shrink-0"
+              className="w-full sm:w-auto sm:shrink-0"
             >
               Save as Goal
             </Button>
@@ -307,8 +307,8 @@ const SavingPlanPage = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs shrink-0 self-end sm:self-auto">
-                      <div className="text-right">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 sm:gap-4 text-xs shrink-0 w-full sm:w-auto pt-2.5 sm:pt-0 border-t border-dark-800 sm:border-t-0">
+                      <div className="text-left sm:text-right">
                         <span className="text-dark-400 block">Current Spend</span>
                         <span className="font-semibold text-dark-200">
                           {formatCurrency(tip.currentMonthlySpend || 0, currencyCode)}/mo

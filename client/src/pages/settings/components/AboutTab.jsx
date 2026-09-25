@@ -34,18 +34,18 @@ const AboutTab = () => {
     <div className="space-y-6">
       {/* Product Overview Card */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-dark-800">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-info-600 to-income-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-info-500/20">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 sm:pb-6 border-b border-dark-800">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-info-600 to-income-500 flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-lg shadow-info-500/20 shrink-0">
                 ₹
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white tracking-tight">SmartExpense</h3>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight break-words">SmartExpense</h3>
                 <p className="text-xs text-dark-400 mt-0.5">
                   Student Financial Intelligence & Expense Planning Platform
                 </p>
-                <div className="flex items-center gap-2 mt-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2">
                   <Badge variant="info">v1.0.0 Release Edition</Badge>
                   <Badge variant="success">All Systems Operational</Badge>
                 </div>

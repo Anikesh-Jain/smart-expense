@@ -242,9 +242,9 @@ const AdminDashboardPage = () => {
       {/* Admin Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-black text-white tracking-tight">Admin Dashboard</h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Admin Dashboard</h1>
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0">
               <FiShield className="text-xs" /> Privileged
             </span>
           </div>
@@ -253,11 +253,12 @@ const AdminDashboardPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <Button
             variant="secondary"
             size="sm"
             icon={FiRefreshCw}
+            className="w-full sm:w-auto"
             onClick={() => {
               fetchOverviewStats();
               if (activeTab === 'users') fetchUsers(userPage, userSearch);
@@ -271,11 +272,11 @@ const AdminDashboardPage = () => {
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex border-b border-dark-800 space-x-2">
+      <div className="flex border-b border-dark-800 space-x-2 overflow-x-auto no-scrollbar whitespace-nowrap">
         <button
           type="button"
           onClick={() => setActiveTab('overview')}
-          className={`pb-3 px-4 text-sm font-semibold transition-all border-b-2 ${
+          className={`pb-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-all border-b-2 shrink-0 ${
             activeTab === 'overview'
               ? 'border-info-500 text-white'
               : 'border-transparent text-dark-400 hover:text-dark-200'
@@ -286,7 +287,7 @@ const AdminDashboardPage = () => {
         <button
           type="button"
           onClick={() => setActiveTab('users')}
-          className={`pb-3 px-4 text-sm font-semibold transition-all border-b-2 flex items-center gap-2 ${
+          className={`pb-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center gap-2 shrink-0 ${
             activeTab === 'users'
               ? 'border-info-500 text-white'
               : 'border-transparent text-dark-400 hover:text-dark-200'
@@ -302,7 +303,7 @@ const AdminDashboardPage = () => {
         <button
           type="button"
           onClick={() => setActiveTab('feedback')}
-          className={`pb-3 px-4 text-sm font-semibold transition-all border-b-2 flex items-center gap-2 ${
+          className={`pb-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center gap-2 shrink-0 ${
             activeTab === 'feedback'
               ? 'border-info-500 text-white'
               : 'border-transparent text-dark-400 hover:text-dark-200'

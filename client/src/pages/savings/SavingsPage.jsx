@@ -195,20 +195,20 @@ const SavingsPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Savings Goals</h2>
           <p className="text-xs sm:text-sm text-dark-400 mt-1">
             Track targets for tech gadgets, semester fees, hostel deposits, and emergency reserves.
           </p>
         </div>
-        <Button variant="primary" icon={FiPlus} onClick={handleOpenCreate}>
+        <Button variant="primary" icon={FiPlus} onClick={handleOpenCreate} className="w-full sm:w-auto shrink-0">
           New Savings Goal
         </Button>
       </div>
 
       {/* Overview Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
         <Card>
           <div className="flex items-center justify-between text-dark-400 mb-1">
             <span className="text-xs font-semibold uppercase tracking-wider">Total Saved Across Goals</span>
@@ -237,11 +237,11 @@ const SavingsPage = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-dark-800 pb-3">
+      <div className="flex items-center gap-1.5 sm:gap-2 border-b border-dark-800 pb-3 overflow-x-auto no-scrollbar whitespace-nowrap -mx-1 sm:mx-0 px-1 sm:px-0">
         <button
           type="button"
           onClick={() => setFilterStatus('all')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 min-h-[34px] ${
             filterStatus === 'all'
               ? 'bg-info-600/20 text-info-400 border border-info-500/30'
               : 'text-dark-400 hover:text-white'
@@ -252,7 +252,7 @@ const SavingsPage = () => {
         <button
           type="button"
           onClick={() => setFilterStatus('active')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 min-h-[34px] ${
             filterStatus === 'active'
               ? 'bg-info-600/20 text-info-400 border border-info-500/30'
               : 'text-dark-400 hover:text-white'
@@ -263,7 +263,7 @@ const SavingsPage = () => {
         <button
           type="button"
           onClick={() => setFilterStatus('completed')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 min-h-[34px] ${
             filterStatus === 'completed'
               ? 'bg-info-600/20 text-info-400 border border-info-500/30'
               : 'text-dark-400 hover:text-white'
@@ -332,13 +332,13 @@ const SavingsPage = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3 pr-6">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-bold text-white tracking-tight">{goal.title}</h3>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base font-bold text-white tracking-tight break-words">{goal.title}</h3>
                         <Badge variant="neutral" size="sm">{goalCur}</Badge>
                       </div>
                       {goal.description && (
-                        <p className="text-xs text-dark-400 mt-0.5 line-clamp-2">{goal.description}</p>
+                        <p className="text-xs text-dark-400 mt-0.5 line-clamp-2 break-words">{goal.description}</p>
                       )}
                     </div>
                   </div>

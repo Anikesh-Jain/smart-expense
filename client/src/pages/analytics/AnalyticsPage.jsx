@@ -86,8 +86,8 @@ const AnalyticsPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Financial Analytics</h2>
           <p className="text-xs sm:text-sm text-dark-400 mt-1">
             Deep dive into your multi-month income flows, expense distributions, and cash reserves.
@@ -95,7 +95,7 @@ const AnalyticsPage = () => {
         </div>
 
         {/* Range Selector */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-dark-400 font-medium">Timeline:</span>
           <div className="flex items-center bg-dark-850 border border-dark-750 rounded-xl p-1">
             <button

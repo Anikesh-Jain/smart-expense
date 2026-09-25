@@ -124,16 +124,16 @@ const HelpFaqTab = () => {
                 <button
                   type="button"
                   onClick={() => toggleItem(item.id)}
-                  className="w-full flex items-center justify-between p-4 text-left gap-3"
+                  className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left gap-2.5 sm:gap-3"
                   aria-expanded={isOpen}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                     <div
                       className={`w-9 h-9 rounded-xl ${item.bg} flex items-center justify-center ${item.color} shrink-0`}
                     >
                       <Icon className="text-base" />
                     </div>
-                    <span className="text-sm font-semibold text-white tracking-tight">
+                    <span className="text-xs sm:text-sm font-semibold text-white tracking-tight break-words flex-1 min-w-0">
                       {item.question}
                     </span>
                   </div>
@@ -143,7 +143,7 @@ const HelpFaqTab = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 pb-4 pt-1 text-xs sm:text-sm text-dark-300 leading-relaxed border-t border-dark-800/80 whitespace-pre-line">
+                  <div className="px-3.5 sm:px-4 pb-3.5 sm:pb-4 pt-1 text-xs sm:text-sm text-dark-300 leading-relaxed border-t border-dark-800/80 whitespace-pre-line break-words">
                     {item.answer}
                   </div>
                 )}

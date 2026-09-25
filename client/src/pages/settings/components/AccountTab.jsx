@@ -166,26 +166,26 @@ const AccountTab = () => {
     <div className="space-y-6">
       {/* Account Profile Overview Card */}
       <Card>
-        <CardContent className="p-5 sm:p-6">
+        <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-info-600 to-income-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-info-500/20 border border-info-400/30">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-info-600 to-income-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-lg shadow-info-500/20 border border-info-400/30 shrink-0">
                 {user?.name ? user.name.charAt(0).toUpperCase() : <FiUser />}
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-white tracking-tight">{user?.name || 'Student Scholar'}</h3>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-bold text-white tracking-tight break-words">{user?.name || 'Student Scholar'}</h3>
                   <Badge variant="success" className="gap-1">
                     <FiAward className="text-xs" /> Verified Account
                   </Badge>
                 </div>
-                <p className="text-xs text-dark-400 mt-0.5">{user?.email || 'student@university.edu'}</p>
+                <p className="text-xs text-dark-400 mt-0.5 truncate">{user?.email || 'student@university.edu'}</p>
                 <p className="text-[11px] text-dark-500 mt-1 flex items-center gap-1">
-                  <FiCalendar className="text-dark-400" /> Joined {joinDate}
+                  <FiCalendar className="text-dark-400 shrink-0" /> Joined {joinDate}
                 </p>
               </div>
             </div>
-            <div className="px-3 py-1.5 rounded-xl bg-dark-900 border border-dark-750 text-xs font-medium text-dark-300 self-start sm:self-auto">
+            <div className="px-3 py-1.5 rounded-xl bg-dark-900 border border-dark-750 text-xs font-medium text-dark-300 self-start sm:self-auto shrink-0">
               Currency: <span className="font-bold text-white">{user?.currency || 'INR'} ({activeCurrencySymbol})</span>
             </div>
           </div>

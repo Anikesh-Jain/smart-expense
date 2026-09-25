@@ -48,23 +48,23 @@ const Modal = ({
       />
 
       {/* Dialog container */}
-      <div className="flex min-h-full items-center justify-center p-4 text-center">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4 text-center">
         <div
-          className={`w-full ${sizeStyles[size] || sizeStyles.md} transform overflow-hidden rounded-2xl bg-dark-850 border border-dark-700 p-6 text-left align-middle shadow-2xl transition-all animate-scale-in ${className}`}
+          className={`w-full ${sizeStyles[size] || sizeStyles.md} transform overflow-hidden rounded-2xl bg-dark-850 border border-dark-700 p-4 sm:p-6 text-left align-middle shadow-2xl transition-all animate-scale-in ${className}`}
           role="dialog"
           aria-modal="true"
         >
           {/* Header */}
           {(title || showClose) && (
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <div>
+            <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4">
+              <div className="min-w-0 flex-1">
                 {title && (
-                  <h3 className="text-lg font-semibold text-white tracking-tight">
+                  <h3 className="text-base sm:text-lg font-semibold text-white tracking-tight break-words">
                     {title}
                   </h3>
                 )}
                 {description && (
-                  <p className="text-xs sm:text-sm text-dark-400 mt-1">
+                  <p className="text-xs sm:text-sm text-dark-400 mt-1 break-words">
                     {description}
                   </p>
                 )}

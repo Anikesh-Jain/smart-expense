@@ -241,27 +241,31 @@ const TransactionsPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Transactions History</h2>
           <p className="text-xs sm:text-sm text-dark-400 mt-1">
             Search, filter, sort, and manage all your hostel expenses and income.
           </p>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <Button
             variant="secondary"
+            size="sm"
             icon={FiDownload}
             onClick={handleExportCSV}
             loading={isExporting}
             disabled={isExporting}
+            className="flex-1 sm:flex-initial"
           >
             Export CSV
           </Button>
           <Button
             variant="primary"
+            size="sm"
             icon={FiPlus}
             onClick={() => navigate('/transactions/add')}
+            className="flex-1 sm:flex-initial"
           >
             Add Transaction
           </Button>
@@ -328,14 +332,14 @@ const TransactionsPage = () => {
             </div>
 
             {/* Date range filters + reset buttons */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-dark-750/50">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-dark-750/50">
               <div className="flex flex-wrap items-center gap-2 text-xs w-full sm:w-auto">
-                <span className="text-dark-400 flex items-center gap-1">
+                <span className="text-dark-400 flex items-center gap-1 shrink-0">
                   <FiCalendar /> Date Range:
                 </span>
                 <input
                   type="date"
-                  className="input py-1 px-2 text-xs w-full sm:w-36 bg-dark-900 border-dark-750"
+                  className="input py-1 px-2 text-xs w-full sm:w-36 bg-dark-900 border-dark-750 flex-1 sm:flex-none"
                   value={startDate}
                   onChange={(e) => {
                     setStartDate(e.target.value);
@@ -346,7 +350,7 @@ const TransactionsPage = () => {
                 <span className="text-dark-400">to</span>
                 <input
                   type="date"
-                  className="input py-1 px-2 text-xs w-full sm:w-36 bg-dark-900 border-dark-750"
+                  className="input py-1 px-2 text-xs w-full sm:w-36 bg-dark-900 border-dark-750 flex-1 sm:flex-none"
                   value={endDate}
                   onChange={(e) => {
                     setEndDate(e.target.value);
@@ -356,7 +360,7 @@ const TransactionsPage = () => {
                 />
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                 {hasActiveFilters && (
                   <Button
                     type="button"
@@ -448,83 +452,154 @@ const TransactionsPage = () => {
           )}
 
           {!loading && !error && transactions.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-dark-200">
-                <thead className="bg-dark-900/60 border-b border-dark-750 text-xs font-semibold text-dark-400 uppercase tracking-wider">
-                  <tr>
-                    <th className="py-3 px-4">Type</th>
-                    <th className="py-3 px-4">Category</th>
-                    <th className="py-3 px-4">Description</th>
-                    <th className="py-3 px-4">Date</th>
-                    <th className="py-3 px-4 text-right">Amount</th>
-                    <th className="py-3 px-4 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-dark-750/50">
-                  {transactions.map((tx) => {
-                    const isIncome = tx.type === 'income';
-                    const txDate = formatFullDate(tx.date);
+            <>
+              {/* Mobile Card List View (sm:hidden) */}
+              <div className="sm:hidden divide-y divide-dark-750/50">
+                {transactions.map((tx) => {
+                  const isIncome = tx.type === 'income';
+                  const txDate = formatFullDate(tx.date);
+                  const currDisplay = getTransactionCurrencyDisplay(tx, currencyCode);
 
-                    return (
-                      <tr key={tx._id} className="hover:bg-dark-750/30 transition-colors">
-                        <td className="py-3.5 px-4 whitespace-nowrap">
-                          <Badge variant={isIncome ? 'success' : 'danger'} size="sm">
-                            <span className="flex items-center gap-1">
-                              {isIncome ? <FiArrowUpRight /> : <FiArrowDownRight />}
-                              {isIncome ? 'Income' : 'Expense'}
-                            </span>
-                          </Badge>
-                        </td>
-                        <td className="py-3.5 px-4 whitespace-nowrap font-medium text-white">
-                          {tx.category}
-                        </td>
-                        <td className="py-3.5 px-4 text-dark-300 max-w-xs truncate">
-                          {tx.description || <span className="text-dark-500 italic">No notes</span>}
-                        </td>
-                        <td className="py-3.5 px-4 whitespace-nowrap text-xs text-dark-400">
-                          {txDate}
-                        </td>
-                        <td className="py-3.5 px-4 whitespace-nowrap text-right font-semibold">
-                          {(() => {
-                            const currDisplay = getTransactionCurrencyDisplay(tx, currencyCode);
-                            return (
-                              <div className={isIncome ? 'text-income-400' : 'text-expense-400'}>
-                                <span>{isIncome ? '+' : '-'}{currDisplay.primaryText}</span>
-                                {currDisplay.secondaryText && (
-                                  <span className="block text-xs font-normal text-dark-400 mt-0.5">
-                                    {currDisplay.secondaryText}
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })()}
-                        </td>
-                        <td className="py-3.5 px-4 whitespace-nowrap text-center">
-                          <div className="inline-flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleOpenEdit(tx)}
-                              className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-dark-700 transition-colors"
-                              title="Edit transaction"
-                            >
-                              <FiEdit2 className="text-sm" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDeletingTxId(tx._id)}
-                              className="p-1.5 rounded-lg text-dark-400 hover:text-expense-400 hover:bg-dark-700 transition-colors"
-                              title="Delete transaction"
-                            >
-                              <FiTrash2 className="text-sm" />
-                            </button>
+                  return (
+                    <div key={tx._id} className="p-3.5 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2.5">
+                        <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                          <div
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-semibold shrink-0 mt-0.5 ${
+                              isIncome
+                                ? 'bg-income-500/15 text-income-400 border border-income-500/20'
+                                : 'bg-expense-500/15 text-expense-400 border border-expense-500/20'
+                            }`}
+                          >
+                            {isIncome ? <FiArrowUpRight /> : <FiArrowDownRight />}
                           </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-white truncate">{tx.category}</p>
+                            <p className="text-xs text-dark-400 mt-0.5 break-words line-clamp-2">
+                              {tx.description || <span className="text-dark-500 italic">No notes</span>}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <div className={isIncome ? 'text-income-400 font-bold text-sm' : 'text-expense-400 font-bold text-sm'}>
+                            <span>{isIncome ? '+' : '-'}{currDisplay.primaryText}</span>
+                            {currDisplay.secondaryText && (
+                              <span className="block text-[11px] font-normal text-dark-400">
+                                {currDisplay.secondaryText}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-1.5 border-t border-dark-750/40 text-dark-400">
+                        <span>{txDate}</span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(tx)}
+                            className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-dark-700 transition-colors"
+                            title="Edit transaction"
+                            aria-label={`Edit ${tx.category}`}
+                          >
+                            <FiEdit2 className="text-sm" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeletingTxId(tx._id)}
+                            className="p-1.5 rounded-lg text-dark-400 hover:text-expense-400 hover:bg-dark-700 transition-colors"
+                            title="Delete transaction"
+                            aria-label={`Delete ${tx.category}`}
+                          >
+                            <FiTrash2 className="text-sm" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View (hidden sm:block) */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full text-left text-sm text-dark-200">
+                  <thead className="bg-dark-900/60 border-b border-dark-750 text-xs font-semibold text-dark-400 uppercase tracking-wider">
+                    <tr>
+                      <th className="py-3 px-4">Type</th>
+                      <th className="py-3 px-4">Category</th>
+                      <th className="py-3 px-4">Description</th>
+                      <th className="py-3 px-4">Date</th>
+                      <th className="py-3 px-4 text-right">Amount</th>
+                      <th className="py-3 px-4 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-dark-750/50">
+                    {transactions.map((tx) => {
+                      const isIncome = tx.type === 'income';
+                      const txDate = formatFullDate(tx.date);
+
+                      return (
+                        <tr key={tx._id} className="hover:bg-dark-750/30 transition-colors">
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <Badge variant={isIncome ? 'success' : 'danger'} size="sm">
+                              <span className="flex items-center gap-1">
+                                {isIncome ? <FiArrowUpRight /> : <FiArrowDownRight />}
+                                {isIncome ? 'Income' : 'Expense'}
+                              </span>
+                            </Badge>
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap font-medium text-white">
+                            {tx.category}
+                          </td>
+                          <td className="py-3.5 px-4 text-dark-300 max-w-xs truncate">
+                            {tx.description || <span className="text-dark-500 italic">No notes</span>}
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap text-xs text-dark-400">
+                            {txDate}
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap text-right font-semibold">
+                            {(() => {
+                              const currDisplay = getTransactionCurrencyDisplay(tx, currencyCode);
+                              return (
+                                <div className={isIncome ? 'text-income-400' : 'text-expense-400'}>
+                                  <span>{isIncome ? '+' : '-'}{currDisplay.primaryText}</span>
+                                  {currDisplay.secondaryText && (
+                                    <span className="block text-xs font-normal text-dark-400 mt-0.5">
+                                      {currDisplay.secondaryText}
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })()}
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap text-center">
+                            <div className="inline-flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEdit(tx)}
+                                className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-dark-700 transition-colors"
+                                title="Edit transaction"
+                              >
+                                <FiEdit2 className="text-sm" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setDeletingTxId(tx._id)}
+                                className="p-1.5 rounded-lg text-dark-400 hover:text-expense-400 hover:bg-dark-700 transition-colors"
+                                title="Delete transaction"
+                              >
+                                <FiTrash2 className="text-sm" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
 
           {/* Pagination Controls */}

@@ -70,8 +70,8 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-950 flex flex-col justify-center items-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-xl bg-dark-850 border border-dark-750 rounded-3xl p-6 sm:p-10 shadow-2xl">
+    <div className="min-h-screen bg-dark-950 flex flex-col justify-center items-center p-3.5 sm:p-6 lg:p-8">
+      <div className="w-full max-w-xl bg-dark-850 border border-dark-750 rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-info-500/15 text-info-400 mb-3 border border-info-500/20">
             <FiShield className="text-2xl" />

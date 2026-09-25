@@ -79,7 +79,7 @@ const CategoriesTab = () => {
       {/* Category Management Card */}
       <Card>
         <CardHeader>
-          <div>
+          <div className="min-w-0 flex-1">
             <CardTitle>Custom Categories</CardTitle>
             <CardDescription>
               Manage custom expense and income tags used to categorize your transactions and budgets.
@@ -90,6 +90,7 @@ const CategoriesTab = () => {
             size="sm"
             icon={FiPlus}
             onClick={() => setIsModalOpen(true)}
+            className="shrink-0 self-start sm:self-auto"
           >
             Add Category
           </Button>
@@ -117,7 +118,7 @@ const CategoriesTab = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
               {expenseCats.map((cat) => (
                 <div
                   key={cat._id || cat.name}
@@ -158,7 +159,7 @@ const CategoriesTab = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
               {incomeCats.map((cat) => (
                 <div
                   key={cat._id || cat.name}
