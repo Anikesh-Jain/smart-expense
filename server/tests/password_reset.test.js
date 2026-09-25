@@ -130,6 +130,13 @@ describe('Password Reset & Forgot Password Security Suite', () => {
       assert.match(res.data.message, /invalid or expired/i);
     });
 
+    it('2b-verify. Verify GET endpoint with invalid token returns 400', async () => {
+      const res = await api('GET', '/auth/reset-password/totally_invalid_token_1234567890');
+      assert.equal(res.status, 400);
+      assert.equal(res.data.success, false);
+      assert.match(res.data.message, /invalid or expired/i);
+    });
+
     it('2c. Reset with expired token returns 400', async () => {
       // Set an expired token directly in MongoDB
       const expiredRaw = crypto.randomBytes(32).toString('hex');
@@ -146,6 +153,27 @@ describe('Password Reset & Forgot Password Security Suite', () => {
       assert.equal(res.status, 400);
       assert.equal(res.data.success, false);
       assert.match(res.data.message, /invalid or expired/i);
+
+      // Verify GET also returns 400 for expired token
+      const verifyRes = await api('GET', `/auth/reset-password/${expiredRaw}`);
+      assert.equal(verifyRes.status, 400);
+      assert.equal(verifyRes.data.success, false);
+      assert.match(verifyRes.data.message, /invalid or expired/i);
+    });
+
+    it('2c-valid. Verify GET endpoint with valid token returns 200 and associated email', async () => {
+      const validRaw = crypto.randomBytes(32).toString('hex');
+      const validHash = crypto.createHash('sha256').update(validRaw).digest('hex');
+
+      await User.updateOne({ _id: userId }, {
+        resetPasswordToken: validHash,
+        resetPasswordExpire: Date.now() + 15 * 60 * 1000
+      });
+
+      const res = await api('GET', `/auth/reset-password/${validRaw}`);
+      assert.equal(res.status, 200);
+      assert.equal(res.data.success, true);
+      assert.equal(res.data.data.email, testUser.email);
     });
 
     it('2d. Valid reset flow: updates password and invalidates token', async () => {

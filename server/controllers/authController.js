@@ -377,6 +377,49 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+// @desc    Verify reset token and retrieve associated email
+// @route   GET /api/auth/reset-password/:token
+// @access  Public
+const verifyResetToken = async (req, res, next) => {
+  try {
+    const rawToken = req.params.token;
+
+    if (!rawToken) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token is required'
+      });
+    }
+
+    // Hash the token from the request to compare against stored hash
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(rawToken)
+      .digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired password reset token'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        email: user.email
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -385,6 +428,8 @@ module.exports = {
   updatePassword,
   logout,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  verifyResetToken
 };
+
 

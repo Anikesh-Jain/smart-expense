@@ -10,7 +10,8 @@ const {
   updatePassword,
   logout,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  verifyResetToken
 } = require('../controllers/authController');
 const { deleteMyAccount } = require('../controllers/userController');
 const {
@@ -95,6 +96,9 @@ router.post('/forgot-password', [
     .normalizeEmail(),
   validate
 ], forgotPassword);
+
+// @route   GET /api/auth/reset-password/:token
+router.get('/reset-password/:token', verifyResetToken);
 
 // @route   POST /api/auth/reset-password/:token
 router.post('/reset-password/:token', [

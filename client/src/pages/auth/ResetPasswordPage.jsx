@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import API from '../../api/axios';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import ErrorAlert from '../../components/ui/ErrorAlert';
-import { FiLock, FiCheckCircle, FiKey, FiArrowLeft } from 'react-icons/fi';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import { FiLock, FiCheckCircle, FiArrowLeft, FiMail, FiRefreshCw } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const ResetPasswordPage = () => {
   const { token: routeToken } = useParams();
   const [searchParams] = useSearchParams();
   const queryToken = searchParams.get('token') || '';
-  const initialToken = routeToken || queryToken || '';
+  const token = (routeToken || queryToken || '').trim();
 
-  const [token, setToken] = useState(initialToken);
+  const [email, setEmail] = useState('');
+  const [tokenError, setTokenError] = useState(() =>
+    !token ? 'No reset token provided. Please use the password reset link sent to your email.' : ''
+  );
+  const [isValidatingToken, setIsValidatingToken] = useState(() => Boolean(token));
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -23,11 +28,39 @@ const ResetPasswordPage = () => {
 
   const navigate = useNavigate();
 
+  // Validate reset token with backend on mount and fetch associated email
+  useEffect(() => {
+    if (!token) return;
+
+    let isMounted = true;
+    const verifyToken = async () => {
+      setTokenError('');
+      try {
+        const res = await API.get(`/auth/reset-password/${token}`);
+        if (isMounted && res.data?.data?.email) {
+          setEmail(res.data.data.email);
+        }
+      } catch (err) {
+        if (isMounted) {
+          const msg = err.response?.data?.message || 'Invalid or expired password reset link. Please request a new one.';
+          setTokenError(msg);
+        }
+      } finally {
+        if (isMounted) {
+          setIsValidatingToken(false);
+        }
+      }
+    };
+
+    verifyToken();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
+
   const validate = () => {
     const errs = {};
-    if (!token.trim()) {
-      errs.token = 'Reset token is required';
-    }
     if (!password) {
       errs.password = 'New password is required';
     } else if (password.length < 6) {
@@ -50,15 +83,14 @@ const ResetPasswordPage = () => {
 
     setIsSubmitting(true);
     try {
-      const cleanToken = token.trim();
-      const res = await API.post(`/auth/reset-password/${cleanToken}`, {
+      const res = await API.post(`/auth/reset-password/${token}`, {
         password
       });
 
       setIsSuccess(true);
       toast.success(res.data?.message || 'Password reset successfully!');
     } catch (error) {
-      const msg = error.response?.data?.message || 'Failed to reset password. Token may be invalid or expired.';
+      const msg = error.response?.data?.message || 'Failed to reset password. Link may be expired.';
       setServerError(msg);
       toast.error(msg);
     } finally {
@@ -105,12 +137,43 @@ const ResetPasswordPage = () => {
               </Button>
             </div>
           </div>
+        ) : isValidatingToken ? (
+          <div className="py-8 text-center space-y-4">
+            <LoadingSpinner size="lg" />
+            <p className="text-sm text-dark-300">Verifying password reset link...</p>
+          </div>
+        ) : tokenError ? (
+          <div className="space-y-5 text-center">
+            <ErrorAlert
+              title="Invalid Reset Link"
+              message={tokenError}
+            />
+            <p className="text-xs text-dark-400 leading-relaxed">
+              Reset links expire after 15 minutes and can only be used once. Please request a new password reset link.
+            </p>
+            <div className="space-y-3 pt-2">
+              <Link
+                to="/forgot-password"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-info-600 hover:bg-info-500 text-white text-sm font-semibold transition-colors"
+              >
+                <FiRefreshCw className="text-base" /> Request New Reset Link
+              </Link>
+              <div>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-dark-400 hover:text-white transition-colors pt-2"
+                >
+                  <FiArrowLeft className="text-base" /> Return to Sign In
+                </Link>
+              </div>
+            </div>
+          </div>
         ) : (
           <div>
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-white tracking-tight">Reset Password</h1>
               <p className="text-xs sm:text-sm text-dark-400 mt-1">
-                Enter your reset token and choose a new, strong password.
+                Choose a new, strong password for your account.
               </p>
             </div>
 
@@ -123,27 +186,26 @@ const ResetPasswordPage = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              {/* If token is not in URL, allow manual input */}
+              {/* Email field (read-only for security, correctly identified as username for password managers) */}
               <Input
-                label="Reset Token"
-                id="token"
-                name="token"
-                type="text"
-                placeholder="Paste reset token here..."
-                icon={FiKey}
-                value={token}
-                onChange={(e) => {
-                  setToken(e.target.value);
-                  if (errors.token) setErrors((prev) => ({ ...prev, token: '' }));
-                }}
-                error={errors.token}
+                label="Email"
+                id="email"
+                name="email"
+                type="email"
+                value={email}
+                readOnly
+                autoComplete="username"
+                icon={FiMail}
+                className="cursor-default bg-dark-900/60 text-dark-300 border-dark-750"
+                helperText="Account associated with this secure reset link"
                 required
               />
 
+              {/* New Password */}
               <Input
                 label="New Password"
-                id="password"
-                name="password"
+                id="newPassword"
+                name="newPassword"
                 type="password"
                 placeholder="Min. 6 characters"
                 icon={FiLock}
@@ -157,6 +219,7 @@ const ResetPasswordPage = () => {
                 required
               />
 
+              {/* Confirm New Password */}
               <Input
                 label="Confirm New Password"
                 id="confirmPassword"
